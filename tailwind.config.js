@@ -25,6 +25,15 @@ module.exports = {
 			colors: {
 				background: "var(--background)",
 				foreground: "var(--foreground)",
+				border: "var(--border, var(--outline-variant))",
+				card: {
+					DEFAULT: "var(--card, var(--surface))",
+					foreground: "var(--card-foreground, var(--foreground))",
+				},
+				muted: {
+					DEFAULT: "var(--muted, var(--surface-container-low))",
+					foreground: "var(--muted-foreground, var(--on-surface-variant))",
+				},
 
 				/* Surface hierarchy */
 				surface: {

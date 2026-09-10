@@ -1,9 +1,10 @@
-"use client"
+"use client";
 
 import React from 'react';
 import { Linkedin } from 'lucide-react';
 import "./styles/mentors.css";
 import StackedText from './StackedText';
+import KineticGrid from '@/components/ui/kinetic-grid';
 
 const team = [
   {
@@ -69,20 +70,22 @@ const MentorCard = ({ mentor, index }) => {
 
 const Mentors = () => {
   return (
-    <div className="wrapper bg-darkgrey">
-      <div className="container px-5">
-        <h1 className='my-9 text-4xl w-full text-center flex items-center justify-center'>
-          <StackedText text="OUR TEAM" fontSize='80px' />
-        </h1>
-        {[0, 1].map((rowIndex) => (
-          <div key={rowIndex} className="row">
-            {team.slice(rowIndex * 3, (rowIndex + 1) * 3).map((mentor, index) => (
-              <MentorCard key={mentor.id} mentor={mentor} index={index + rowIndex * 3} />
-            ))}
-          </div>
-        ))}
+    <KineticGrid globalColor="default" className="bg-[#000000] w-full min-h-screen flex items-center justify-center py-16">
+      <div className="wrapper">
+        <div className="container px-5">
+          <h1 className='my-9 text-4xl w-full text-center flex items-center justify-center'>
+            <StackedText text="OUR TEAM" fontSize='80px' />
+          </h1>
+          {[0, 1].map((rowIndex) => (
+            <div key={rowIndex} className="row">
+              {team.slice(rowIndex * 3, (rowIndex + 1) * 3).map((mentor, index) => (
+                <MentorCard key={mentor.id} mentor={mentor} index={index + rowIndex * 3} />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </KineticGrid>
   );
 };
 

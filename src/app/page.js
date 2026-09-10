@@ -6,7 +6,7 @@ import HeroMod from "./HeroMod";
 import TimelineOld from "./TimelineOld";
 import Mentors from "@/components/mentors";
 import ContactUs from "@/components/contactUs";
-import Preptember from "@/components/preptember";
+import Tracks from "@/components/Tracks";
 import { ChatProvider } from "@/components/chatcontext";
 
 import Timer from "@/components/Timer";
@@ -28,8 +28,8 @@ export default function Home() {
 						<Timer launchDate="2026-09-26T16:00:00" />
 					</section>
 
-					<section id="programs">
-						<Preptember />
+					<section id="tracks">
+						<Tracks />
 					</section>
 
 					<section id="mentors">

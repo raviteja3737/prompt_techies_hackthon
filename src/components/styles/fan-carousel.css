@@ -1,0 +1,81 @@
+/* ═══════════════════════════════════════════════════
+   CARD FAN CAROUSEL — RESPONSIVE FAN & CARD GEOMETRY
+   Based on 21st.dev/@aayush-duhan/components/card-fan-carousel
+   ═══════════════════════════════════════════════════ */
+
+.fan-layout {
+  height: min(34rem, 65vh);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.fan-card {
+  will-change: transform;
+  backface-visibility: hidden;
+  border-radius: min(2.2rem, 4.8vh);
+  width: min(22rem, 42vh);
+  height: min(28rem, 52vh);
+  position: absolute;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 75, 255, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
+
+.fan-card:after {
+  content: "";
+  z-index: 100;
+  pointer-events: auto;
+  height: 4rem;
+  position: absolute;
+  bottom: -4rem;
+  left: 0;
+  right: 0;
+}
+
+@media (max-width: 1024px) {
+  .fan-layout {
+    height: min(32rem, 60vh);
+  }
+  .fan-card {
+    border-radius: min(1.8rem, 4vh);
+    width: min(18rem, 36vh);
+    height: min(25rem, 48vh);
+  }
+}
+
+@media (max-width: 768px) {
+  .fan-layout {
+    height: min(29rem, 58vh);
+  }
+  .fan-card {
+    border-radius: min(1.5rem, 3.5vh);
+    width: min(15rem, 32vh);
+    height: min(22rem, 44vh);
+  }
+}
+
+@media (max-width: 640px) {
+  .fan-layout {
+    height: min(26rem, 56vh);
+  }
+  .fan-card {
+    border-radius: min(1.25rem, 3vh);
+    width: min(13rem, 30vh);
+    height: min(19rem, 40vh);
+  }
+}
+
+@media (max-width: 480px) {
+  .fan-layout {
+    height: min(24rem, 54vh);
+  }
+  .fan-card {
+    border-radius: min(1.1rem, 2.8vh);
+    width: min(11.5rem, 28vh);
+    height: min(17rem, 38vh);
+  }
+}

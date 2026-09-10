@@ -10,7 +10,7 @@ import { GoMultiSelect } from "react-icons/go";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 import "./timeline-styles.css";
-import StackedTextDark from "@/components/StackedTextdark";
+import StackedText from "@/components/StackedText";
 
 export default function Timeline() {
 	const [width, setWidth] = useState(
@@ -39,13 +39,16 @@ export default function Timeline() {
 	return (
 		<div
 			className={cn(
-				"overflow-hidden timeline-background w-full bg-beige text-darkgrey",
-				"p-12",
+				"overflow-hidden timeline-background w-full bg-gradient-to-b from-[#080f1e] via-[#0c162d] to-[#060a15] text-white",
+				"py-20 px-4 md:px-12",
 				"relative"
 			)}
 		>
-			<div className="text-center">
-				<StackedTextDark text="Timeline" fontSize="72px" />
+			<div className="text-center mb-4">
+				<StackedText text="Timeline" fontSize="72px" />
+				<p className="text-sky-200/80 text-base md:text-lg max-w-xl mx-auto mt-4 font-medium">
+					Key milestones and schedule for <span className="text-[#00c8ff] font-semibold">Promptathon 2026</span>
+				</p>
 			</div>
 			<div
 				className={cn("w-full py-8 ok", "flex flex-col-reverse gap-y-12")}
@@ -54,7 +57,7 @@ export default function Timeline() {
 				<div className="lg:px-20 lg:flex lg:items-center lg:justify-center">
 					<ol
 						className={cn(
-							"relative border-s border-green border-l-2 lg:border-none",
+							"relative border-s border-[#00c8ff]/40 border-l-2 lg:border-none",
 							"lg:grid lg:grid-cols-2 lg:max-w-[80%]"
 						)}
 					>
@@ -66,31 +69,31 @@ export default function Timeline() {
 						></motion.div>
 						<div></div>
 						<TimelineItem
-							date="30th September 2024"
+							date="30th September 2026"
 							title="Preptember Begins"
-							content="Preptember, like the name suggests, is a preparation month for Hacktoberfest. It is a great way to delve into open source and prep for the upcoming hackathon. The first video explores the first phase of a hackathon."
+							content="Preptember is the official preparation month for Promptathon. Delve into prompt engineering, LLM workflows, and master the tools for the upcoming hackathon."
 							link="/preptember"
 							icon={<FaLightbulb fontSize={12} />}
 							multiplier={1}
 						/>
 						<TimelineItem
-							date="8th October 2024"
+							date="8th October 2026"
 							title="Registrations Open"
-							content="The registrations for Hacktoberfest 2024 will open on the website."
+							content="Registrations for Promptathon 2026 officially open online. Assemble your team and reserve your spot."
 							icon={<BiSolidParty fontSize={12} />}
 							multiplier={isMobile ? 1 : -1}
 						/>
 						<div></div>
 						<div></div>
 						<TimelineItem
-							date="24th October 2024"
+							date="24th October 2026"
 							title="Registrations Close"
-							content="Registrations will be closed."
+							content="Registrations close. Team rosters and problem statement tracks are finalized."
 							icon={<GoMultiSelect fontSize={12} />}
 							multiplier={1}
 						/>
 						<TimelineItem
-							date="26th October 2024"
+							date="26th October 2026"
 							title="Day 1 Begins"
 							content={
 								<>
@@ -98,11 +101,11 @@ export default function Timeline() {
 									<br />
 									6:00 PM - Problem Statements Released
 									<br />
-									6:45 PM - Problem Statement Finalization
+									6:45 PM - Track Finalization
 									<br />
-									7:15 PM - Coding Begins
+									7:15 PM - Hacking Begins
 									<br />
-									2:00 AM - Ice-Breaker Session 1
+									2:00 AM - Midnight Mentor Sync
 								</>
 							}
 							icon={<BiSolidParty fontSize={12} />}
@@ -111,20 +114,19 @@ export default function Timeline() {
 						<div></div>
 						<div></div>
 						<TimelineItem
-							date="27th October 2024"
-							title="Day 2 & Closing"
+							date="27th October 2026"
+							title="Day 2 & Finale"
 							content={
 								<>
-									9:30 AM - Ice-Breaker Session 2<br />
-									2:00 PM - Submissions Open
+									9:30 AM - Morning Check-in
+									<br />
+									2:00 PM - Project Submissions Open
 									<br />
 									2:30 PM - Submissions Close
 									<br />
-									3:00 PM - Coding Ends
+									3:30 PM - Live Demos & Judging
 									<br />
-									3:30 PM - Presentations
-									<br />
-									8:30 PM - Closing Ceremony
+									8:30 PM - Awards Ceremony
 								</>
 							}
 							icon={<BiSolidParty fontSize={12} />}
@@ -157,31 +159,32 @@ function TimelineItem({ date, title, content, link, icon, multiplier = 1 }) {
 			viewport={{ once: true, amount: 0.5 }}
 			transition={{ duration: 0.5 }}
 		>
-			<div className="flex justify-center items-center absolute w-5 h-5 bg-green rounded-full mt-2.5 -start-2.5 border border-darkgreen text-darkgreen">
+			{/* Node dot: light green and black */}
+			<div className="flex justify-center items-center absolute w-7 h-7 bg-[#070e09] rounded-full mt-2 -start-3.5 border-2 border-[#4ade80] text-[#4ade80] shadow-[0_0_14px_rgba(74,222,128,0.7)] z-20">
 				{icon}
 			</div>
 			<div className="my-auto">
-				<time className="mb-1 text-sm font-normal leading-none text-green">
+				<time className="mb-1.5 text-xs sm:text-sm font-mono font-bold leading-none text-[#00c8ff] uppercase tracking-wider block">
 					{date}
 				</time>
-				<h3 className="text-lg font-semibold text-beige">{title}</h3>
-				<p className="mb-4 text-base font-normal text-zinc-300">
+				<h3 className="text-xl font-bold font-orbitron text-white mb-2">{title}</h3>
+				<div className="mb-4 text-sm font-normal text-slate-300 leading-relaxed">
 					{content}
-				</p>
+				</div>
 				{link && (
 					<Link
 						href={link}
 						className={cn(
 							"inline-flex items-center px-4 py-2",
-							"text-sm font-medium",
-							"text-beige bg-darkgreen border border-gray-200 rounded-lg",
-							"hover:bg-green hover:text-darkgreen transition-colors",
-							"focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100 focus:text-blue-700"
+							"text-xs font-semibold rounded-full",
+							"text-white bg-[#004bff] border border-blue-400/40",
+							"hover:bg-[#003cb3] hover:shadow-[0_0_16px_rgba(0,200,255,0.4)] transition-all",
+							"focus:outline-none focus:ring-2 focus:ring-cyan-400"
 						)}
 					>
 						Learn more{" "}
 						<svg
-							className="w-5 h-5 ms-2 rtl:rotate-180"
+							className="w-4 h-4 ms-2 rtl:rotate-180"
 							aria-hidden="true"
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"

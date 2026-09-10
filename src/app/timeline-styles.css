@@ -1,19 +1,24 @@
+/* ═══════════════════════════════════════════════════
+   TIMELINE STYLES — PROMPT TECHIES HACKATHON
+   Deep blue-black surface, light green/black nodes, cyan/blue cards
+   ═══════════════════════════════════════════════════ */
+
 .timeline-background {
-	background-image: url(../components/assets/ooorganize.svg);
+	background-image: radial-gradient(circle at 50% 20%, rgba(0, 75, 255, 0.08) 0%, transparent 70%);
 }
 
 ::-webkit-scrollbar {
-	width: 4px;
+	width: 6px;
 }
 ::-webkit-scrollbar-thumb {
-	background-color: #50da4c;
-	border-radius: 2px;
+	background-color: #004bff;
+	border-radius: 3px;
 }
 ::-webkit-scrollbar-track {
-	background-color: #f3f4f6;
+	background-color: #070c18;
 }
 ::-webkit-scrollbar-thumb:hover {
-	background-color: #183717;
+	background-color: #00c8ff;
 }
 
 #timeline ol li {
@@ -24,9 +29,17 @@
 }
 
 #timeline ol li > div.my-auto {
-	background-color: #183717;
+	background: linear-gradient(145deg, #0d172e 0%, #080f20 100%);
+	border: 1px solid rgba(0, 75, 255, 0.25);
 	border-radius: 1rem;
-	padding: 1rem;
+	padding: 1.25rem;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 75, 255, 0.1);
+	transition: all 0.3s ease;
+}
+
+#timeline ol li > div.my-auto:hover {
+	border-color: rgba(0, 200, 255, 0.5);
+	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 200, 255, 0.2);
 }
 
 #timeline ol li > div.my-auto::before {
@@ -37,8 +50,8 @@
 	width: 0;
 	height: 0;
 	border: 10px solid transparent;
-	border-right-color: #183717;
-	z-index: -1;
+	border-right-color: #0d172e;
+	z-index: 1;
 	transform: translateY(-50%);
 }
 
@@ -47,25 +60,27 @@
 		width: 8px;
 	}
 	::-webkit-scrollbar-thumb {
-		background-color: #50da4c;
+		background-color: #004bff;
 		border-radius: 4px;
 	}
 	::-webkit-scrollbar-track {
-		background-color: #f3f4f6;
+		background-color: #070c18;
 	}
 	::-webkit-scrollbar-thumb:hover {
-		background-color: #183717;
+		background-color: #00c8ff;
 	}
 
 	#timeline ol > div#progress {
 		position: absolute;
 		left: 50%;
 		top: 0;
-		width: 5px;
+		width: 4px;
 		height: 100%;
 		transform-origin: 0 0;
-		background: #50da4c;
+		background: linear-gradient(to bottom, #4ade80 0%, #00c8ff 50%, #004bff 100%);
+		box-shadow: 0 0 14px rgba(0, 200, 255, 0.6);
 		transform: translateX(-50%);
+		border-radius: 9999px;
 	}
 
 	#timeline ol li {
@@ -89,9 +104,10 @@
 	}
 
 	#timeline ol li > div.my-auto {
-		background-color: #183717;
+		background: linear-gradient(145deg, #0d172e 0%, #080f20 100%);
+		border: 1px solid rgba(0, 75, 255, 0.25);
 		border-radius: 1rem;
-		padding: 1rem;
+		padding: 1.25rem;
 	}
 
 	#timeline ol li:nth-of-type(odd) > div.my-auto::before {
@@ -102,7 +118,7 @@
 		width: 0;
 		height: 0;
 		border: 10px solid transparent;
-		border-right-color: #183717;
+		border-right-color: #0d172e;
 		transform: translateY(-50%);
 	}
 
@@ -114,7 +130,7 @@
 		width: 0;
 		height: 0;
 		border: 10px solid transparent;
-		border-left-color: #183717;
+		border-left-color: #0d172e;
 		transform: translateY(-50%) translateX(-100%);
 	}
 }

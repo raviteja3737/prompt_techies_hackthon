@@ -1,5 +1,5 @@
 .wrapper {
-  background-color: var(--inverse-surface);
+  background-color: transparent;
   width: 100%;
   min-height: 100vh;
   display: flex;
