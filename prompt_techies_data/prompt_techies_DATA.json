@@ -1,0 +1,195 @@
+{
+  "company": {
+    "name": "Prompt Techies",
+    "legalName": "TROVO FI PRIVATE LIMITED",
+    "website": "https://prompttechies.in",
+    "email": "contact@prompttechies.in",
+    "supportEmail": "prompttechies@gmail.com",
+    "phone": "+91 8008087702",
+    "tagline": "Built for developers who want more than just a degree",
+    "motto": "Dream. Develop. Deploy. ⚡",
+    "secondaryTagline": "Where Skills Pay the Bills",
+    "recognitions": [
+      "DPIIT Recognized Startup",
+      "MSME Registered Company"
+    ],
+    "social": {
+      "instagram": "https://www.instagram.com/prompt_techies",
+      "linkedin": "https://www.linkedin.com/company/prompt-techies/",
+      "twitter": "https://twitter.com/prompttechies",
+      "github": "https://github.com/prompttechies-del",
+      "registrationForm": "https://forms.gle/L2rvjg4DvLUY6PR26"
+    },
+    "address": {
+      "flat": "Flat No. 304, Plot No. 155 & 156",
+      "building": "Sai Lakshmi Residency, IDPL Colony",
+      "landmark": "Beside Reddy’s Factory, Bachupally",
+      "district": "Medchal-Malkajgiri District",
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "pincode": "500090",
+      "country": "India"
+    }
+  },
+  "leadership": [
+    {
+      "name": "Saahil Zameer Shaik",
+      "role": "Founder & Chief Executive Officer (CEO)",
+      "bio": "Leads company strategy, long-term product vision, enterprise partnerships, and corporate scaling."
+    },
+    {
+      "name": "Mohammad Suhana",
+      "role": "Co-Founder",
+      "bio": "Drives ecosystem growth, operations, and academic community alliances."
+    },
+    {
+      "name": "Amarnadh Reddy Nanubala",
+      "role": "Chief Technology Officer (CTO)",
+      "bio": "Leads AI infrastructure, developer platforms, and engineering architecture."
+    },
+    {
+      "name": "Meghana Thipanni",
+      "role": "Chief Operating Officer (COO)",
+      "bio": "Oversees operational efficiency, event delivery, and program execution."
+    },
+    {
+      "name": "Prabhas Banavath",
+      "role": "Chief Marketing Officer (CMO)",
+      "bio": "Manages brand positioning, marketing campaigns, and community growth."
+    },
+    {
+      "name": "Nomula Ananya Reddy",
+      "role": "Chief Brand & Business Officer (CBBO)",
+      "bio": "Directs institutional alliances, business development, and enterprise partnerships."
+    }
+  ],
+  "learningTracks": [
+    {
+      "id": "ai-emerging-tech",
+      "title": "AI & Emerging Tech Bootcamps",
+      "shortDesc": "Hands-on Generative AI, LLMs, prompt engineering, and autonomous agent building.",
+      "description": "Practical workshops where students learn Generative AI, Machine Learning, Prompt Engineering, Cloud Infrastructure, and AI Automation by building working products.",
+      "icon": "ri-robot-line",
+      "badge": "Flagship Program",
+      "tags": ["GenAI", "LLMs", "Prompt Engineering", "Agents", "RAG"]
+    },
+    {
+      "id": "fullstack-ai",
+      "title": "Full-Stack AI Engineering",
+      "shortDesc": "Develop and deploy scalable AI web applications with Next.js, Vercel AI SDK, and modern cloud APIs.",
+      "description": "Architect end-to-end applications integrating LLM APIs, vector stores, streaming UI components, and real-time state management.",
+      "icon": "ri-code-s-slash-line",
+      "badge": "Industry Standard",
+      "tags": ["Next.js", "AI SDK", "Tailwind CSS", "Vector DB", "APIs"]
+    },
+    {
+      "id": "hackathons",
+      "title": "Technical Hackathons & Sprints",
+      "shortDesc": "Fast-paced innovation challenges solving real-world problems under mentorship.",
+      "description": "Intensive team-based hackathons where developers collaborate, build prototypes, and pitch to industry judges and investors.",
+      "icon": "ri-trophy-line",
+      "badge": "High Impact",
+      "tags": ["Hackathons", "Rapid MVP", "Problem Solving", "Pitching"]
+    },
+    {
+      "id": "career-readiness",
+      "title": "Career Readiness & Portfolio Sprints",
+      "shortDesc": "Production-grade code, GitHub audits, interview preparation, and direct startup internships.",
+      "description": "Turn your project repositories into hiring-ready portfolios with 1-on-1 code reviews and direct connections to tech employers.",
+      "icon": "ri-briefcase-line",
+      "badge": "Placement",
+      "tags": ["GitHub Audit", "System Design", "Internships", "Interviews"]
+    }
+  ],
+  "startupRoadmap": [
+    {
+      "step": "01",
+      "phase": "DISCOVER",
+      "tagline": "Find a Problem Worth Solving",
+      "points": [
+        "Identify meaningful real-world problems",
+        "Understand user and market pain points",
+        "Refine the core value proposition",
+        "Build a clear execution roadmap"
+      ]
+    },
+    {
+      "step": "02",
+      "phase": "VALIDATE",
+      "tagline": "Prove the Idea",
+      "points": [
+        "Test assumptions with target audiences",
+        "Run lean problem validation tests",
+        "Build quick wireframes & prototypes",
+        "Measure early interest and user feedback"
+      ]
+    },
+    {
+      "step": "03",
+      "phase": "BUILD",
+      "tagline": "Turn Ideas into Products",
+      "points": [
+        "Architect scalable full-stack applications",
+        "Integrate production-grade AI & APIs",
+        "Deploy testable MVPs in institutional cohorts",
+        "Iterate rapidly based on live usage"
+      ]
+    },
+    {
+      "step": "04",
+      "phase": "LAUNCH",
+      "tagline": "Enter the Real World",
+      "points": [
+        "Deploy to production cloud infrastructure",
+        "Onboard early adopting users",
+        "Develop distribution and partnership channels",
+        "Execute go-to-market campaigns"
+      ]
+    },
+    {
+      "step": "05",
+      "phase": "SCALE",
+      "tagline": "Build the Startup",
+      "points": [
+        "Formalize startup entity & legal compliance",
+        "Expand user base and enterprise partnerships",
+        "Access ecosystem funding & incubation readiness",
+        "Scale operational and technical infrastructure"
+      ]
+    }
+  ],
+  "stats": [
+    { "label": "Active Projects", "value": "50+" },
+    { "label": "Institutional Ecosystems", "value": "12+" },
+    { "label": "Student Builders", "value": "100+" },
+    { "label": "MVPs Deployed", "value": "Multiple" }
+  ],
+  "mentorCompanies": [
+    "Google",
+    "Microsoft",
+    "Meta",
+    "Amazon",
+    "Uber",
+    "Adobe",
+    "Airbnb",
+    "IBM",
+    "Oracle",
+    "Accenture",
+    "TCS",
+    "Infosys",
+    "Wipro",
+    "PayPal",
+    "Nvidia",
+    "Netflix",
+    "Salesforce",
+    "Apple",
+    "Tesla"
+  ],
+  "navItems": [
+    { "href": "#about", "label": "Our Story" },
+    { "href": "#programs", "label": "Innovation Programs" },
+    { "href": "#mentors", "label": "Mentors" },
+    { "href": "#timeline", "label": "Timeline" },
+    { "href": "#contact", "label": "Get in Touch" }
+  ]
+}
