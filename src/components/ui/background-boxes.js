@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import  cn  from "@/utils/cn";
+import cn from "@/utils/cn";
 
 export const BoxesCore = ({
   className,
@@ -10,38 +10,36 @@ export const BoxesCore = ({
   const rows = new Array(150).fill(1);
   const cols = new Array(100).fill(1);
   let colors = [
-    "#50da4c",
-    // "#ff8bff",
-    // "#f3f0e0",
+    "#004bff",
+    "#00c8ff",
   ];
   const getRandomColor = () => {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
   return (
-    (<div
+    <div
       style={{
         transform: `translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(0.675) rotate(0deg) translateZ(0)`,
       }}
       className={cn(
-        "absolute left-1/4 p-4 -top-1/4 flex  -translate-x-1/2 -translate-y-1/2 w-full h-full z-0 ",
+        "absolute left-1/4 p-4 -top-1/4 flex -translate-x-1/2 -translate-y-1/2 w-full h-full z-0 pointer-events-auto",
         className
       )}
       {...rest}>
       {rows.map((_, i) => (
-        <motion.div key={`row` + i} className="w-16 h-8  border-l border-[#50da4c] relative">
-
+        <motion.div key={`row` + i} className="w-[72px] h-[36px] border-l-[1.5px] border-white/25 relative">
           {cols.map((_, j) => (
             <motion.div
               whileHover={{
-                backgroundColor: `#50da4c`,
+                backgroundColor: `#00c8ff`,
                 transition: { duration: 0 },
               }}
               animate={{
                 transition: { duration: 2 },
               }}
               key={`col` + j}
-              className="w-16 h-8  border-r border-t border-[#50da4c] relative">
+              className="w-[72px] h-[36px] border-r-[1.5px] border-t-[1.5px] border-white/25 relative">
               {j % 2 === 0 && i % 2 === 0 ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +47,7 @@ export const BoxesCore = ({
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  className="absolute h-6 w-10 -top-[14px] -left-[22px] text-slate-700 stroke-[1px] pointer-events-none">
+                  className="absolute h-6 w-10 -top-[14px] -left-[22px] text-white/35 stroke-[1.5px] pointer-events-none">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
                 </svg>
               ) : null}
@@ -57,7 +55,7 @@ export const BoxesCore = ({
           ))}
         </motion.div>
       ))}
-    </div>)
+    </div>
   );
 };
 const Boxes = React.memo(BoxesCore);

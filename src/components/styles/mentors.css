@@ -1,9 +1,5 @@
-
-
 .wrapper {
-  background-image: url(../assets/Gold\ COSC\ \(4\).svg);
-  background-repeat: no-repeat;
-  background-size: contain;
+  background-color: var(--inverse-surface);
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -38,9 +34,9 @@
   overflow: hidden;
   position: relative;
   transition: all 0.6s cubic-bezier(.28,-0.03,0,.99);
-  box-shadow: 0px 10px 30px -5px rgba(0,0,0,0.8);
+  box-shadow: 0px 10px 30px -5px rgba(0, 75, 255, 0.2);
   max-width: 200px;
-  border: 1px solid #50DA4C;
+  border: 1px solid rgba(0, 75, 255, 0.3);
 }
 
 .card-up {
@@ -60,6 +56,8 @@
   transform: translateY(0) scale(1.05);
   z-index: 1;
   max-width: 240px;
+  border-color: #00c8ff;
+  box-shadow: 0px 10px 30px -5px rgba(0, 200, 255, 0.3);
 }
 
 .card-content {
@@ -72,7 +70,7 @@
   padding: 15px;
   width: 100% !important;
   height: 100% !important;
-  background: linear-gradient(to top, #183717, transparent);
+  background: linear-gradient(to top, rgba(0, 10, 30, 0.95), transparent);
   color: white;
   transform: translateY(100%);
   transition: transform 0.3s ease;
@@ -103,7 +101,7 @@
 }
 
 .description p {
-  color: #C401C4 !important;
+  color: #00c8ff !important;
   font-size: 1.4em;
   margin-bottom: 5px;
 }
@@ -115,54 +113,27 @@
 
 .social-links a {
   font-size: 2em;
-  color: #50DA4C;
+  color: #004bff;
   transition: color 0.3s ease;
 }
 
 .social-links a:hover {
-  color: #C401C4;
+  color: #00c8ff;
 }
 
-#sai-kiran{
-  background-image: url(../../app/mentor-images/SaiKiran.png);
+#saahil, #suhana, #amarnadh, #meghana, #prabhas, #ananya {
+  background: linear-gradient(135deg, #004bff 0%, #00c8ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-#ritesh{
-  background-image: url(../../app/mentor-images/Ritesh.jpg);
+.card-initial {
+  font-size: 6rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: bold;
+  text-transform: uppercase;
 }
-
-#akil{
-  background-image: url(../../app/mentor-images/Akil-2.jpeg);
-}
-
-#koushik{
-  background-image: url(../../app/mentor-images/Kousik.jpg);
-}
-
-#adhit{
-  background-image: url(../../app/mentor-images/Adhit.JPG);
-}
-
-#guru{
-  background-image: url(../../app/mentor-images/Guru.jpg);
-}
-
-#harshith{
-  background-image: url(../../app/mentor-images/Harshith.jpeg);
-}
-
-#mahathi{
-  background-image: url(../../app/mentor-images/Mahathi.png);
-}
-
-#nithin{
-  background-image: url(../../app/mentor-images/Nithin.jpeg);
-}
-
-#sameekruth{
-  background-image: url(../../app/mentor-images/Sameekruth.png);
-}
-
 
 @media (max-width: 768px) {
   .row {
@@ -174,7 +145,6 @@
   .card {
     width: 100%;
     max-width: none;
-
     transform: none !important;
   }
 
@@ -207,6 +177,5 @@
     height: 30px;
     font-size: 1em;
   }
-
 
 }

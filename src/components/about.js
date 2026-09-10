@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import StackedText from './StackedText';
+import StackedTextDark from './StackedTextdark';
 import "./styles/about.css";
 
 const About = () => {
@@ -30,9 +30,9 @@ const About = () => {
     };
 
     const boxVariants = {
-        hidden: { x: -100, opacity: 0 },
+        hidden: { y: 50, opacity: 0 },
         visible: {
-            x: 0,
+            y: 0,
             opacity: 1,
             transition: {
                 duration: 0.8,
@@ -43,19 +43,27 @@ const About = () => {
 
     const BoxContent = ({ title, content }) => (
         <motion.div
-            className="bg-darkgreen bg-opacity-80 rounded-lg p-6 custom-shadow custom-pink-shadow shadow-lg w-full lg:w-1/3 flex flex-col"
+            className="about-stacked-card p-6 md:p-8 w-full lg:w-1/3 flex flex-col justify-between text-left"
             variants={boxVariants}
         >
-            <h2 className="text-3xl font-semibold mb-4">{title}</h2>
-            <p className="flex-grow">{content}</p>
+            <div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-3 text-white flex items-center">
+                    <span className="text-secondary mr-2 font-mono">&gt;</span>
+                    {title}
+                </h2>
+                <div className="w-10 h-[2px] bg-secondary mb-4 opacity-80" />
+                <p className="flex-grow text-slate-300 text-base md:text-lg leading-relaxed">
+                    {content}
+                </p>
+            </div>
         </motion.div>
     );
 
     return (
-        <section className="about flex flex-col items-center justify-center p-4 w-full">
-            <div className="about-content flex flex-col items-center text-center text-white w-full max-w-6xl">
-                <h1 className="my-10 text-4xl w-full text-center flex items-center justify-center">
-                    <StackedText text="About" fontSize="80px" />
+        <section className="about-section flex flex-col items-center justify-center py-20 px-4 w-full">
+            <div className="about-content flex flex-col items-center text-center w-full max-w-6xl">
+                <h1 className="my-8 text-4xl w-full text-center flex items-center justify-center">
+                    <StackedTextDark text="About" fontSize="80px" />
                 </h1>
                 <motion.div
                     ref={ref}
@@ -65,16 +73,16 @@ const About = () => {
                     className="lg:mb-14 flex flex-col lg:flex-row lg:space-x-10 space-y-10 lg:space-y-0 items-stretch w-full mt-8"
                 >
                     <BoxContent
-                        title="What is Hacktoberfest?"
-                        content="Hacktoberfest, is a month-long global celebration of all things open source, presented by DigitalOcean, Cloudflare, and Quira. Hacktoberfest celebrates giving back to these projects, honing skills, and recognizing the people who make open source exceptional."
+                        title="What is Promptathon?"
+                        content="A 24-hour national hackathon bringing together students, developers, and innovators to architect and deploy real-world AI applications under expert guidance."
                     />
                     <BoxContent
-                        title="Why We're Thrilled?"
-                        content="The CBIT Hacktoberfest '24 is a thrilling 24-hour hackathon that inspires students and enthusiasts through community, collaboration and skill-building. Participants will embrace the spirit of open source while diving into innovation and teamwork."
+                        title="Rewards and Perks"
+                        content="Exciting cash prize pool, developer bounties, cloud computing credits, 1-on-1 mentorship from top tech giants, and direct incubation opportunities for winning teams."
                     />
                     <BoxContent
                         title="Who Are We?"
-                        content="We are the Chaitanya Bharathi Institute of Technology Open Source Community (COSC) in Hyderabad. Our mission is to promote open source values, provide a platform for students to explore and contribute to tech, that crafts experiences that nurture a lifelong love for open source."
+                        content="Prompt Techies is an AI-first technology company and student-focused innovation platform bridging the gap between classroom theory and real-world execution."
                     />
                 </motion.div>
             </div>

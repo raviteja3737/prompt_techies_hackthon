@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import LogoDark from "./assets/logo_horizontal_black.png";
-import LogoLight from "./assets/logo_horizontal_beige.png";
+import Logo from "./assets/prompt_techies_logo.png";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import cn from "@/utils/cn";
@@ -76,20 +75,20 @@ const Navbar = () => {
 
 	const navItems = [
 		{ href: "#about", label: "About" },
-		{ href: "#preptember", label: "Preptember" },
+		{ href: "#programs", label: "Innovation Programs" },
 		{ href: "#mentors", label: "Mentors" },
 		{ href: "#timeline", label: "Timeline" },
-		{ href: "#contact", label: "Contact Us" },
+		{ href: "#contact", label: "Get in Touch" },
 	];
 
 	return (
 		<header
 			className={cn(
 				navTransparent
-					? "bg-darkgrey/20"
+					? "bg-on-surface/10"
 					: simulatedDarkMode
-					? "bg-darkgreen lg:bg-darkgrey/80 lg:shadow-md lg:backdrop-blur-lg"
-					: "bg-beige lg:bg-beige/80 lg:shadow-md lg:backdrop-blur-md",
+					? "bg-primary lg:bg-on-surface/90 lg:shadow-md lg:backdrop-blur-lg"
+					: "bg-surface lg:bg-surface/80 lg:shadow-md lg:backdrop-blur-md",
 				"fixed top-0 w-full z-50",
 				"transition-all duration-500 ease-in-out"
 			)}
@@ -98,23 +97,19 @@ const Navbar = () => {
 				className="mx-auto z-50 flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8"
 				aria-label="Global"
 			>
-				<div className="flex lg:flex-1">
+				<div className="flex lg:flex-1 items-center">
 					<Link
 						href="/"
-						className="-m-1.5 p-1.5"
+						className="-m-1.5 p-1.5 flex items-center gap-2 group"
 						onClick={() => setMenuOpen(false)}
 					>
-						<span className="sr-only">HactoberFest 2024</span>
+						<span className="sr-only">Prompt Techies</span>
 						<Image
-							className="h-8 w-auto"
-							src={
-								navTransparent || simulatedDarkMode
-									? LogoLight
-									: LogoDark
-							}
-							alt="Hacktober Fest 2024 Logo"
-							width={200}
-							height={55}
+							className="h-11 md:h-14 w-auto object-contain drop-shadow-[0_0_12px_rgba(0,200,255,0.25)] transition-transform duration-300 group-hover:scale-105"
+							src={Logo}
+							alt="Prompt Techies Logo"
+							width={220}
+							height={65}
 							priority={true}
 						/>
 					</Link>
@@ -126,11 +121,11 @@ const Navbar = () => {
 							"-m-2.5 inline-flex items-center justify-center",
 							"rounded-md p-2.5",
 							navTransparent
-								? "text-beige hover:text-green"
-								: "text-gray-900 hover:text-deeppink",
+								? "text-inverse-on-surface hover:text-secondary"
+								: "text-on-surface hover:text-primary",
 							"transition-all duration-300 ease-in-out",
 							simulatedDarkMode
-								? "text-beige hover:text-lightgreen"
+								? "text-inverse-on-surface hover:text-secondary"
 								: ""
 						)}
 						onClick={() => setMenuOpen(true)}
@@ -161,14 +156,14 @@ const Navbar = () => {
 							}
 							className={cn(
 								navTransparent
-									? "text-beige hover:text-green"
-									: "text-gray-900 hover:text-deeppink",
+									? "text-inverse-on-surface hover:text-secondary"
+									: "text-on-surface hover:text-primary",
 								"transition-all duration-300 ease-in-out",
 								"text-sm font-semibold leading-6",
 								activeLink === item.href.split("#")[1]
 									? navTransparent
-										? "text-green border-b-2 border-green hover:text-green hover:border-green"
-										: "text-darkgreen border-b-2 border-darkgreen hover:text-darkgreen"
+										? "text-secondary border-b-2 border-secondary hover:text-secondary hover:border-secondary"
+										: "text-primary border-b-2 border-primary hover:text-primary"
 									: ""
 							)}
 						>
@@ -183,10 +178,10 @@ const Navbar = () => {
 								href="/teamdetails"
 								className={cn(
 									"text-sm font-semibold leading-6",
-									"text-darkgreen px-4 py-2 rounded-lg",
+									"text-primary px-4 py-2 rounded-full",
 									navTransparent
-										? "text-green bg-transparent hover:bg-green hover:text-darkgreen"
-										: "bg-transparent hover:bg-green hover:text-darkgreen",
+										? "text-secondary bg-transparent hover:bg-primary-container hover:text-primary"
+										: "bg-transparent hover:bg-primary-container hover:text-primary",
 									"transition-colors duration-300 ease-in-out"
 								)}
 							>
@@ -196,7 +191,7 @@ const Navbar = () => {
 								className={cn(
 									"text-sm font-semibold leading-6",
 									"flex items-center gap-1",
-									"text-darkgreen px-4 py-2 rounded-lg",
+									"text-primary px-4 py-2 rounded-full",
 									navTransparent
 										? "text-red-400 bg-transparent hover:bg-red-500 hover:text-red-50"
 										: "text-red-800 hover:bg-red-500 hover:text-red-50",
@@ -212,10 +207,10 @@ const Navbar = () => {
 							href="/login"
 							className={cn(
 								"text-sm font-semibold leading-6",
-								"text-darkgreen px-4 py-2 rounded-lg",
+								"text-on-primary px-4 py-2 rounded-full",
 								navTransparent
-									? "bg-lightgreen hover:bg-green hover:text-darkgreen"
-									: "bg-green hover:bg-darkgreen hover:text-beige",
+									? "bg-primary hover:bg-primary-container hover:text-on-primary"
+									: "bg-primary hover:bg-primary-container hover:text-on-primary",
 								"transition-colors duration-300 ease-in-out"
 							)}
 						>
@@ -230,29 +225,25 @@ const Navbar = () => {
 				aria-modal="true"
 			>
 				<div className="fixed inset-0 z-10"></div>
-				<div className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+				<div className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-surface px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
 					<div className="flex items-center justify-between">
 						<Link
 							href="/"
-							className="-m-1.5 p-1.5"
+							className="-m-1.5 p-1.5 flex items-center"
 							onClick={() => setMenuOpen(false)}
 						>
-							<span className="sr-only">Hacktober Fest 2024</span>
+							<span className="sr-only">Prompt Techies</span>
 							<Image
-								className="h-8 w-auto"
-								src={
-									menuOpen && !simulatedDarkMode
-										? LogoDark
-										: navTransparent || simulatedDarkMode
-										? LogoLight
-										: LogoDark
-								}
-								alt="CBIT Hacktober Fest Hackathon 2024 Logo"
+								className="h-10 w-auto object-contain"
+								src={Logo}
+								alt="Prompt Techies Logo"
+								width={180}
+								height={50}
 							/>
 						</Link>
 						<button
 							type="button"
-							className="-m-2.5 rounded-md p-2.5 text-gray-700"
+							className="-m-2.5 rounded-md p-2.5 text-on-surface"
 							onClick={() => setMenuOpen(false)}
 						>
 							<span className="sr-only">Close menu</span>
@@ -283,7 +274,7 @@ const Navbar = () => {
 												? item.href
 												: `/${item.href}`
 										}
-										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-on-surface hover:bg-surface-container-low"
 										onClick={() => setMenuOpen(false)}
 									>
 										{item.label}
@@ -296,10 +287,10 @@ const Navbar = () => {
 										<Link
 											href="/teamdetails"
 											className={cn(
-												"rounded-lg px-3 py-2.5 flex-1",
+												"rounded-full px-3 py-2.5 flex-1",
 												"text-base font-semibold leading-7",
-												"text-gray-900 transition-colors duration-300 ease-in-out",
-												"bg-green text-darkgreen hover:text-lightgreen focus:text-lightgreen hover:bg-darkgreen focus:bg-darkgreen",
+												"transition-colors duration-300 ease-in-out",
+												"bg-primary text-on-primary hover:bg-primary-container focus:bg-primary-container",
 												"flex items-center justify-between"
 											)}
 										>
@@ -309,10 +300,10 @@ const Navbar = () => {
 										<button
 											onClick={logout}
 											className={cn(
-												"block rounded-lg px-3 py-2.5 flex-1",
+												"block rounded-full px-3 py-2.5 flex-1",
 												"text-base font-semibold leading-7",
-												"text-gray-900 transition-colors duration-300 ease-in-out",
-												"bg-red-400 text-beige hover:text-red-50 focus:text-red-50 hover:bg-red-500 focus:bg-red-500",
+												"transition-colors duration-300 ease-in-out",
+												"bg-red-400 text-on-primary hover:bg-red-500 focus:bg-red-500",
 												"flex items-center justify-between"
 											)}
 										>
@@ -324,10 +315,10 @@ const Navbar = () => {
 									<Link
 										href="/login"
 										className={cn(
-											"-mx-3 block rounded-lg px-3 py-2.5",
+											"-mx-3 block rounded-full px-3 py-2.5",
 											"text-base font-semibold leading-7",
-											"text-gray-900 transition-colors duration-300 ease-in-out",
-											"bg-green text-darkgreen hover:text-lightgreen focus:text-lightgreen hover:bg-darkgreen focus:bg-darkgreen",
+											"transition-colors duration-300 ease-in-out",
+											"bg-primary text-on-primary hover:bg-primary-container focus:bg-primary-container",
 											"flex items-center justify-between"
 										)}
 										onClick={() => setMenuOpen(false)}

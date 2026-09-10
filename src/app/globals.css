@@ -2,17 +2,129 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════
+   PROMPT TECHIES — DESIGN SYSTEM CSS VARIABLES
+   Light Mode (DESIGN.md) + Dark Mode (Inverse)
+   ═══════════════════════════════════════════════════ */
+
 html {
 	forced-color-adjust: none;
 	color-scheme: light;
 }
 
 :root {
-	/* https://developer.chrome.com/blog/auto-dark-theme/#detecting-auto-dark-theme */
 	color-scheme: only light;
+
+	/* Surface Hierarchy */
 	--background: #ffffff;
 	--foreground: #171717;
+	--surface: #ffffff;
+	--surface-dim: #f5f5f5;
+	--surface-bright: #ffffff;
+	--surface-container-lowest: #fafafa;
+	--surface-container-low: #f0f0f0;
+	--surface-container: #e8e8e8;
+	--surface-container-high: #d9d9d9;
+	--surface-container-highest: #cccccc;
+	--on-surface: #171717;
+	--on-surface-variant: #6a7282;
+	--inverse-surface: #0a0a0a;
+	--inverse-on-surface: #ffffff;
+	--surface-variant: #e5e7eb;
+	--surface-tint: #004bff;
+
+	/* Primary — Cobalt Blue */
+	--primary: #004bff;
+	--on-primary: #ffffff;
+	--primary-container: #003cb3;
+	--on-primary-container: #e8f0ff;
+	--inverse-primary: #00c8ff;
+	--primary-fixed: #003cb3;
+	--primary-fixed-dim: #004bff;
+	--on-primary-fixed: #ffffff;
+	--on-primary-fixed-variant: #e8f0ff;
+
+	/* Secondary — Electric Cyan */
+	--secondary: #00c8ff;
+	--on-secondary: #0a0a0a;
+	--secondary-container: #00b0e0;
+	--on-secondary-container: #ffffff;
+	--secondary-fixed: #00b0e0;
+	--secondary-fixed-dim: #00c8ff;
+	--on-secondary-fixed: #0a0a0a;
+	--on-secondary-fixed-variant: #ffffff;
+
+	/* Tertiary — Golden Yellow */
+	--tertiary: #ffe07d;
+	--on-tertiary: #0a0a0a;
+	--tertiary-container: #f5af19;
+	--on-tertiary-container: #ffffff;
+	--tertiary-fixed: #f5af19;
+	--tertiary-fixed-dim: #ffe07d;
+	--on-tertiary-fixed: #0a0a0a;
+	--on-tertiary-fixed-variant: #ffffff;
+
+	/* Error — Warm Orange */
+	--error: #e65c00;
+	--on-error: #ffffff;
+	--error-container: #ffb4ab;
+	--on-error-container: #0a0a0a;
+
+	/* Outline */
+	--outline: #99a1af;
+	--outline-variant: #d1d5dc;
 }
+
+/* ─── Dark Mode ─── */
+.dark,
+[data-theme="dark"] {
+	color-scheme: dark;
+
+	--background: #0a0a0a;
+	--foreground: #ededed;
+	--surface: #0a0a0a;
+	--surface-dim: #141414;
+	--surface-bright: #1a1a1a;
+	--surface-container-lowest: #0e0e0e;
+	--surface-container-low: #1a1a1a;
+	--surface-container: #222222;
+	--surface-container-high: #2a2a2a;
+	--surface-container-highest: #333333;
+	--on-surface: #ededed;
+	--on-surface-variant: #9ca3af;
+	--inverse-surface: #ffffff;
+	--inverse-on-surface: #0a0a0a;
+	--surface-variant: #374151;
+	--surface-tint: #004bff;
+
+	--primary: #3b82f6;
+	--on-primary: #ffffff;
+	--primary-container: #004bff;
+	--on-primary-container: #e8f0ff;
+	--inverse-primary: #003cb3;
+
+	--secondary: #00c8ff;
+	--on-secondary: #0a0a0a;
+	--secondary-container: #0e7490;
+	--on-secondary-container: #e0f7ff;
+
+	--tertiary: #ffe07d;
+	--on-tertiary: #0a0a0a;
+	--tertiary-container: #b8860b;
+	--on-tertiary-container: #fff8e1;
+
+	--error: #ff7b33;
+	--on-error: #ffffff;
+	--error-container: #7f2b00;
+	--on-error-container: #ffb4ab;
+
+	--outline: #6b7280;
+	--outline-variant: #374151;
+}
+
+/* ═══════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════ */
 
 * {
 	margin: 0;
@@ -22,18 +134,28 @@ html {
 	scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--background: #0a0a0a;
-		--foreground: #ededed;
-	}
-}
-
 body {
 	color: var(--foreground);
 	background: var(--background);
-	font-family: var(--font-sg);
+	font-family: var(--font-geist), system-ui, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
+
+/* ─── Selection ─── */
+::selection {
+	background-color: rgba(0, 75, 255, 0.15);
+	color: #004bff;
+}
+
+.dark ::selection {
+	background-color: rgba(0, 200, 255, 0.2);
+	color: #00c8ff;
+}
+
+/* ═══════════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════════ */
 
 @layer utilities {
 	.text-balance {
@@ -41,11 +163,7 @@ body {
 	}
 }
 
-::selection {
-	background-color: #b4ff38;
-	color: #000000;
-}
-
+/* ─── Blinking cursor ─── */
 .blinking-underscore {
 	animation: blink 1s steps(1) infinite;
 }
@@ -61,80 +179,89 @@ body {
 	}
 }
 
+/* ═══════════════════════════════════════════════════
+   CHATBOT — Neon Blue/Cyan Theme
+   ═══════════════════════════════════════════════════ */
+
 .chatbot-button {
 	position: fixed;
 	bottom: 20px;
 	right: 20px;
-	background: linear-gradient(135deg, #c401c4 0%, #1c8818 100%);
-	color: #fefdf8;
+	background: linear-gradient(135deg, #004bff 0%, #00c8ff 100%);
+	color: #ffffff;
 	border: none;
-	border-radius: 30px;
+	border-radius: 9999px;
 	padding: 10px 18px;
 	font-size: 24px;
 	cursor: pointer;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 4px 16px rgba(0, 75, 255, 0.3);
 	z-index: 1000;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-size: 100% 100%;
+	background-size: 200% 200%;
 	background-position: 0% 50%;
-	transition: background-position 0.3s ease;
+	transition: all 0.3s ease-out;
 }
 
 .chatbot-button:hover {
 	background-position: 100% 50%;
+	box-shadow: 0 6px 24px rgba(0, 75, 255, 0.4);
+	transform: translateY(-2px);
 }
 
 .chatbot-popup {
 	position: fixed;
 	bottom: 140px;
 	right: 20px;
-	width: 300px;
-	height: 500px;
-	background-color: #fefdf8;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-	border-radius: 10px;
-	padding: 10px;
+	width: 340px;
+	height: 520px;
+	background-color: var(--surface);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+	border: 1px solid var(--outline-variant);
+	border-radius: 1rem;
+	padding: 12px;
 	display: flex;
 	flex-direction: column;
 	z-index: 999;
+}
+
+.dark .chatbot-popup {
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 .chatbot-popup h3 {
 	margin: 0;
 	padding-bottom: 10px;
 	font-size: 20px;
-	color: #1c1c1c;
+	color: var(--on-surface);
 }
 
 .chatbot-popup p {
 	margin: 0;
 	font-size: 14px;
-	color: #666;
+	color: var(--on-surface-variant);
 }
 
 .close-button {
 	background: none;
 	border: none;
 	font-size: 20px;
-	color: #c401c4;
+	color: var(--primary);
 	cursor: pointer;
 	align-self: flex-end;
+	transition: color 0.2s ease-out;
 }
 
 .close-button:hover {
-	color: #ff8bff;
+	color: var(--secondary);
 }
 
-.dg-green-sv-bg {
-	background-image: url(../app/preptember/assets/repeat-background.png);
-	background-size: 200px;
-	animation: scroll-left 10s linear infinite;
-}
-
+/* ─── Responsive chatbot ─── */
 @media only screen and (max-width: 768px) {
 	.chatbot-popup {
 		bottom: 100px;
+		width: 300px;
+		height: 480px;
 	}
 }

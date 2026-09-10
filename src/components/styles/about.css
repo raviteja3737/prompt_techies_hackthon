@@ -1,39 +1,35 @@
-/* .about {
-    background-image: url(../assets/ffflurry.svg);
-
-} */
-
-.about {
-    background-color: #50da4c;
+.about-section {
+  background: linear-gradient(180deg, #e6f0fa 0%, #edf5ff 50%, #e1effe 100%);
+  position: relative;
+  overflow: hidden;
 }
 
-.contact-bg{
-    background-image: url(../assets/ffflurry.svg);
- 
+.about-stacked-card {
+  background-color: #0c1222;
+  border-radius: 6px;
+  border: 1.5px solid #004bff;
+  box-shadow: 6px 6px 0px #004bff, 12px 12px 0px #00c8ff;
+  transition: all 0.3s cubic-bezier(0.28, -0.03, 0, 0.99);
 }
 
+.about-stacked-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0px #004bff, 16px 16px 0px #00c8ff;
+}
 
+.contact-bg {
+  background-color: var(--surface-container-low);
+}
 
 @keyframes glowing {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
-
 
 @media (max-width: 768px) {
-    .about-heading {
-        font-size: 1rem; 
-    }
-
-    .about-paragraph {
-        font-size: 0.5rem; 
-    }
-}
-
-.custom-pink-shadow {
-    box-shadow: 2px 2px 0px 2px rgba(255, 139, 255, 0.8); 
+  .about-heading { font-size: 1rem; }
+  .about-paragraph { font-size: 0.5rem; }
+  .about-stacked-card {
+    box-shadow: 4px 4px 0px #004bff, 8px 8px 0px #00c8ff;
+  }
 }

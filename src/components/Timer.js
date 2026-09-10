@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion, useInView, useAnimation } from "framer-motion";
 import "./styles/timer.css";
-import StackedText from "./StackedText";
+import StackedTextDark from "./StackedTextdark";
 
 const getTimeLeft = (expiry) => {
 	let days = "0";
@@ -25,13 +25,15 @@ const getTimeLeft = (expiry) => {
 	return { days, hours, minutes, seconds };
 };
 
-const Timer = ({ launchDate }) => {
+const Timer = ({ launchDate = "2026-09-26T16:00:00" }) => {
 	const [timeLeft, setTimeLeft] = useState(getTimeLeft(launchDate));
+	const [mounted, setMounted] = useState(false);
 	const ref = useRef(null);
-	const isInView = useInView(ref, { amount: 0.3 }); // Removed 'once: true'
+	const isInView = useInView(ref, { amount: 0.1, once: true });
 	const controls = useAnimation();
 
 	useEffect(() => {
+		setMounted(true);
 		let frame;
 		const update = () => {
 			setTimeLeft(getTimeLeft(launchDate));
@@ -44,8 +46,6 @@ const Timer = ({ launchDate }) => {
 	useEffect(() => {
 		if (isInView) {
 			controls.start("visible");
-		} else {
-			controls.start("hidden");
 		}
 	}, [isInView, controls]);
 
@@ -61,7 +61,7 @@ const Timer = ({ launchDate }) => {
 	};
 
 	const itemVariants = {
-		hidden: { y: 100, opacity: 0 },
+		hidden: { y: 50, opacity: 0 },
 		visible: {
 			y: 0,
 			opacity: 1,
@@ -74,39 +74,38 @@ const Timer = ({ launchDate }) => {
 	};
 
 	return (
-		<div suppressHydrationWarning>
+		<div suppressHydrationWarning className="w-full">
 			<section
 				ref={ref}
-				className="py-24 bg-repeaat w-full flex flex-col justify-between items-center"
+				className="py-20 bg-surface-container-low timer-gradient-bg w-full flex flex-col justify-between items-center"
 			>
 				<h1 className="text-4xl w-full text-center flex flex-col items-center justify-center">
-					<StackedText text="When???" fontSize="75px" />
-					<span className="text-beige mt-7">
-						{" "}
-						Hackathon Starts In..{" "}
+					<StackedTextDark text="Coming Soon" fontSize="75px" />
+					<span className="text-on-surface text-xl md:text-2xl font-semibold mt-6 tracking-wide">
+						Next Event Begins In..
 					</span>
 				</h1>
-				<div className="flex-col w-full justify-between items-center lg:flex-row">
+				<div className="flex-col w-full justify-between items-center lg:flex-row mt-6">
 					<aside className="w-full text-center flex items-center justify-center">
 						<motion.div
-							className="lg:flex-row flex flex-col justify-center lg:justify-start mt-10 gap-1.5"
+							className="lg:flex-row flex flex-col justify-center items-center gap-4 px-4"
 							variants={containerVariants}
 							initial="hidden"
 							animate={controls}
 						>
 							{[
-								{ value: timeLeft.days, label: "Days" },
-								{ value: timeLeft.hours, label: "Hours" },
-								{ value: timeLeft.minutes, label: "Minutes" },
-								{ value: timeLeft.seconds, label: "Seconds" },
+								{ value: mounted ? timeLeft.days : "16", label: "Days" },
+								{ value: mounted ? timeLeft.hours : "00", label: "Hours" },
+								{ value: mounted ? timeLeft.minutes : "00", label: "Minutes" },
+								{ value: mounted ? timeLeft.seconds : "00", label: "Seconds" },
 							].map((item) => (
 								<motion.span
 									key={item.label}
 									variants={itemVariants}
-									className="flex flex-col justify-center items-center bg-green text-black text-5xl lg:w-36 w-56 py-3 shadow-lg rounded-xl"
+									className="flex flex-col justify-center items-center bg-primary text-on-primary text-5xl lg:w-36 w-56 py-5 shadow-primary-glow rounded-xl hover:shadow-primary-glow-hover transition-all duration-200"
 								>
-									{item.value}
-									<small className="text-xs lg:text-sm uppercase font-semibold text-darkgreen">
+									<span className="font-bold tracking-wider">{item.value}</span>
+									<small className="text-xs lg:text-sm uppercase font-semibold text-on-primary/80 mt-1 tracking-widest">
 										{item.label}
 									</small>
 								</motion.span>

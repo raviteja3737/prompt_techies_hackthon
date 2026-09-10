@@ -18,50 +18,50 @@ const StackedText = ({ text, fontSize = "48px" }) => {
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
-			{/* First layer (deep pink with text border) */}
+			{/* First layer */}
 			<span
 				style={{
 					...baseStyle,
-					left: isHovered ? "0" : "12px", // Moves back to 0 on hover
+					left: isHovered ? "0" : "12px",
 					top: isHovered ? "0" : "12px",
-					color: "#C401C4",
+					color: "#003cb3",
 					textShadow: `
-						-1px -1px 0 #C401C4, 
-						1px -1px 0 #C401C4, 
-						-1px 1px 0 #C401C4, 
-						1px 1px 0 #C401C4`,
+						-1px -1px 0 #003cb3, 
+						1px -1px 0 #003cb3, 
+						-1px 1px 0 #003cb3, 
+						1px 1px 0 #003cb3`,
 				}}
 			>
 				{text}
 			</span>
 
-			{/* Second layer (green with text border) */}
+			{/* Second layer */}
 			<span
 				style={{
 					...baseStyle,
-					left: isHovered ? "0" : "6px", // Moves back to 0 on hover
+					left: isHovered ? "0" : "6px",
 					top: isHovered ? "0" : "6px",
-					color: "#50DA4C",
+					color: "#00c8ff",
 					textShadow: `
-						-1px -1px 0 #50DA4C, 
-						1px -1px 0 #50DA4C, 
-						-1px 1px 0 #50DA4C, 
-						1px 1px 0 #50DA4C`,
+						-1px -1px 0 #00c8ff, 
+						1px -1px 0 #00c8ff, 
+						-1px 1px 0 #00c8ff, 
+						1px 1px 0 #00c8ff`,
 				}}
 			>
 				{text}
 			</span>
 
-			{/* Third (top) layer (white with text border) */}
+			{/* Third (top) layer */}
 			<span
 				style={{
 					...baseStyle,
-					color: "#FEFDF8",
+					color: "#ffffff",
 					textShadow: `
-						-1px -1px 0 #FEFDF8, 
-						1px -1px 0 #FEFDF8, 
-						-1px 1px 0 #FEFDF8, 
-						1px 1px 0 #FEFDF8`,
+						-1px -1px 0 #ffffff, 
+						1px -1px 0 #ffffff, 
+						-1px 1px 0 #ffffff, 
+						1px 1px 0 #ffffff`,
 					position: "relative",
 				}}
 			>

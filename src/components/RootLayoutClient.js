@@ -67,7 +67,7 @@ export default function RootLayoutClient({ children }) {
 			>
 				<i className="ri-bard-fill"></i>
 				<p className="text-lg ml-3">
-					{isChatbotOpen ? "Close" : "Ask COSC!"}
+					{isChatbotOpen ? "Close" : "Ask PT"}
 				</p>
 			</button>
 

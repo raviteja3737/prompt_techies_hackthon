@@ -1,14 +1,12 @@
-.bg-repeaat{
-    background-image: url(../../app/preptember/assets/repeat-background.png);
-    background-size: 200px;
-    animation: scroll-left 10s linear infinite;
+/* Timer section - clean background with subtle animation */
+@keyframes subtle-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-@keyframes scroll-left {
-    from {
-      background-position: 0;
-    }
-    to {
-      background-position: -200px;
-    }
-  }
+.timer-gradient-bg {
+  background: linear-gradient(135deg, var(--surface-container-low) 0%, var(--surface) 50%, var(--surface-container-low) 100%);
+  background-size: 200% 200%;
+  animation: subtle-gradient 8s ease-in-out infinite;
+}

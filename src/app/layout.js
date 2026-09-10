@@ -1,3 +1,5 @@
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/navbar";
@@ -8,60 +10,59 @@ import Script from "next/script";
 import toast, { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/utils/contexts/AuthContext";
 
-const sg = localFont({
-	src: "./fonts/sg.woff2",
-	variable: "--font-sg",
-	weight: "100 900",
+const orbitron = localFont({
+	src: "./fonts/Orbitron-Bold.woff2",
+	variable: "--font-orbitron",
+	weight: "700 900",
 });
-const geistMono = localFont({
-	src: "./fonts/GeistMonoVF.woff",
-	variable: "--font-geist-mono",
+
+const spaceGrotesk = localFont({
+	src: "./fonts/SpaceGrotesk-VariableFont_wght.ttf",
+	variable: "--font-tech",
 	weight: "100 900",
 });
 
 export const metadata = {
-	title: "Hacktoberfest 2024 - CBIT Open Source Community",
+	title: "Promptathon 2026 — AI Hackathon by Prompt Techies",
 	description:
-		"Dive into the world of open source with CBIT Open Source Community. CBIT Hacktoberfest 2024 is one of the biggest open-source events of the year on the 26th and 27th of October for an exhilarating 24-hour virtual hackathon, celebrating open source, teamwork and creativity.",
+		"Promptathon is the premier AI Hackathon conducted by Prompt Techies. Build, hack, and deploy future-ready AI solutions with real-world impact. Dream. Develop. Deploy. ⚡",
 	keywords: [
-		"hacktoberfest",
-		"cbit",
-		"open source",
-		"community",
-		"preptember",
-		"git",
-		"github",
+		"promptathon",
+		"promptathon 2026",
+		"prompt techies",
+		"AI hackathon",
 		"hackathon",
-		"programming",
-		"development",
-		"web development",
-		"software development",
-		"cbit",
-		"chaitanya bharathi institute of technology",
+		"bootcamps",
+		"startup incubation",
+		"DPIIT",
+		"MSME",
+		"AI engineering",
+		"generative AI",
+		"LLMs",
+		"full-stack development",
+		"next.js",
 		"hyderabad",
 		"telangana",
 		"india",
-		"college",
-		"hacktoberfest 2024",
-		"cosc",
+		"student developers",
+		"innovation programs",
 	],
 	icons: {
 		icon: [
 			{
 				media: "(prefers-color-scheme: light)",
-				url: "/LightMode.png",
-				href: "/LightMode.png",
+				url: "/assets/prompt_techies_logo.png",
+				href: "/assets/prompt_techies_logo.png",
 			},
 			{
 				media: "(prefers-color-scheme: dark)",
-				url: "/DarkMode.png",
-				href: "/DarkMode.png",
+				url: "/assets/prompt_techies_logo.png",
+				href: "/assets/prompt_techies_logo.png",
 			},
 		],
 	},
 	metadataBase: new URL(
-		process.env.NEXT_PUBLIC_SITE_URL ||
-			"https://cbit-hacktoberfest24.vercel.app/"
+		process.env.NEXT_PUBLIC_SITE_URL || "https://prompttechies.in"
 	),
 };
 
@@ -96,9 +97,10 @@ export default function RootLayout({ children }) {
 			</head>
 			<body
 				className={cn(
-					`${sg.variable} ${geistMono.variable}`,
-					"antialiased text-darkgrey bg-beige",
-					"min-h-screen md:grid md:grid-rows-[auto,1fr,auto] relative"
+					`${GeistSans.variable} ${GeistMono.variable} ${orbitron.variable} ${spaceGrotesk.variable}`,
+					"antialiased text-on-surface bg-background font-geist",
+					"min-h-screen md:grid md:grid-rows-[auto,1fr,auto] relative",
+					"transition-colors duration-300"
 				)}
 				suppressHydrationWarning={true}
 			>
