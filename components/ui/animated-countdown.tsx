@@ -137,8 +137,18 @@ function useVisibleUnits({
 	}, [showDays, showHours, showMinutes, showSeconds, unitOrder]);
 }
 
-function CountdownNumber({ value, className }: { value: string; className?: string }) {
+function CountdownNumber({ value, className, hasMounted = true }: { value: string; className?: string; hasMounted?: boolean }) {
 	const shouldReduceMotion = useReducedMotion();
+	if (!hasMounted) {
+		return (
+			<span
+				suppressHydrationWarning
+				className={cn("relative inline-grid min-w-[2ch] place-items-center tabular-nums overflow-hidden h-[1.15em]", className)}
+			>
+				<span suppressHydrationWarning>{value}</span>
+			</span>
+		);
+	}
 	return (
 		<span
 			suppressHydrationWarning
@@ -147,6 +157,7 @@ function CountdownNumber({ value, className }: { value: string; className?: stri
 			<AnimatePresence initial={false} mode="popLayout">
 				<motion.span
 					key={value}
+					suppressHydrationWarning
 					initial={shouldReduceMotion ? false : { y: 12, opacity: 0 }}
 					animate={shouldReduceMotion ? { opacity: 1 } : { y: 0, opacity: 1 }}
 					exit={shouldReduceMotion ? { opacity: 0 } : { y: -12, opacity: 0 }}
@@ -170,6 +181,7 @@ function CountdownUnit({
 	labelClassName,
 	accentClassName,
 	index,
+	hasMounted = true,
 }: {
 	unit: UnitType;
 	value: number;
@@ -180,6 +192,7 @@ function CountdownUnit({
 	labelClassName?: string;
 	accentClassName?: string;
 	index: number;
+	hasMounted?: boolean;
 }) {
 	const shouldReduceMotion = useReducedMotion();
 	const sizeConfig = SIZE_STYLES[size];
@@ -207,6 +220,7 @@ function CountdownUnit({
 			)}
 			<CountdownNumber
 				value={format(value)}
+				hasMounted={hasMounted}
 				className={cn(
 					"font-bold font-orbitron leading-none tracking-tight text-on-surface",
 					variant === "modern" && "bg-gradient-to-b from-[#004bff] via-[#0055ff] to-[#00a8ff] bg-clip-text text-transparent dark:from-white dark:to-cyan-200",
@@ -341,6 +355,7 @@ export function AnimatedCountdown({
 							labelClassName={labelClassName}
 							accentClassName={accentClassName}
 							index={index}
+							hasMounted={hasMounted}
 						/>
 						{showSeparators && index < visibleUnits.length - 1 && (
 							<span

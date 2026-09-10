@@ -354,25 +354,25 @@ export function CardFanCarousel({ cards, className }: CardFanCarouselProps) {
 								</div>
 
 								{/* Middle Icon & Title */}
-								<div className="relative z-10 my-auto flex flex-col items-start gap-3">
-									<div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/15 to-secondary/20 flex items-center justify-center text-primary text-2xl shadow-sm border border-primary/20">
+								<div className="relative z-10 my-auto flex flex-col items-start gap-2 sm:gap-2.5">
+									<div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-primary/15 to-secondary/20 flex items-center justify-center text-primary text-xl sm:text-2xl shadow-sm border border-primary/25">
 										<i className={card.icon || "ri-sparkling-line"}></i>
 									</div>
-									<h3 className="font-orbitron font-extrabold text-2xl sm:text-3xl text-on-surface tracking-tight leading-tight">
+									<h3 className="font-orbitron font-extrabold text-xl sm:text-2xl text-slate-900 dark:text-white tracking-tight leading-tight">
 										{card.title}
 									</h3>
-									<p className="text-xs sm:text-sm text-on-surface-variant line-clamp-3 leading-relaxed">
+									<p className="text-xs sm:text-[13px] text-slate-800 dark:text-slate-200 font-medium leading-relaxed">
 										{card.description}
 									</p>
 								</div>
 
 								{/* Bottom Tags */}
 								{card.tags && card.tags.length > 0 && (
-									<div className="relative z-10 flex flex-wrap gap-1.5 pt-4 border-t border-primary/10 dark:border-white/10">
+									<div className="relative z-10 flex flex-wrap gap-1.5 pt-3 border-t border-slate-300/60 dark:border-white/10">
 										{card.tags.map((tag, i) => (
 											<span
 												key={i}
-												className="text-[10px] sm:text-[11px] font-mono font-medium px-2 py-0.5 rounded-md bg-white/80 dark:bg-white/5 border border-primary/15 dark:border-white/10 text-on-surface/80"
+												className="text-[10px] sm:text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-slate-100/90 dark:bg-white/10 border border-slate-300/70 dark:border-white/15 text-slate-800 dark:text-slate-200 shadow-sm"
 											>
 												{tag}
 											</span>

@@ -121,6 +121,8 @@ const ContactUs = () => {
 					</ContactItem>
 				</motion.div>
 			</div>
+			{/* Feathered bottom edge gradient mask to blend smoothly into the footer */}
+			<div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 md:h-56 bg-gradient-to-t from-[#070c18] via-[#070c18]/80 to-transparent z-[5]" />
 		</section>
 	);
 };

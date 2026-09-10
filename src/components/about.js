@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import StackedTextDark from './StackedTextdark';
+import StackedText from './StackedText';
 import SlidingEaseVerticalBars from '@/components/ui/sliding-ease';
 import "./styles/about.css";
 
@@ -72,7 +72,7 @@ const About = () => {
 
             <div className="about-content relative z-10 flex flex-col items-center text-center w-full max-w-6xl">
                 <h1 className="my-8 text-4xl w-full text-center flex items-center justify-center">
-                    <StackedTextDark text="About" fontSize="80px" />
+                    <StackedText text="About" fontSize="80px" />
                 </h1>
                 <motion.div
                     ref={ref}

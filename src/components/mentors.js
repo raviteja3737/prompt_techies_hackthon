@@ -70,8 +70,12 @@ const MentorCard = ({ mentor, index }) => {
 
 const Mentors = () => {
   return (
-    <KineticGrid globalColor="default" className="bg-[#000000] w-full min-h-screen flex items-center justify-center py-16">
-      <div className="wrapper">
+    <KineticGrid globalColor="default" className="bg-[#070c18] w-full min-h-screen flex items-center justify-center py-20 relative overflow-hidden">
+      {/* Feathered top and bottom edge gradient masks to blend seamlessly with Tracks and Timeline */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 md:h-56 bg-gradient-to-b from-[#070c18] via-[#070c18]/80 to-transparent z-[5]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 md:h-56 bg-gradient-to-t from-[#070c18] via-[#070c18]/80 to-transparent z-[5]" />
+
+      <div className="wrapper relative z-10">
         <div className="container px-5">
           <h1 className='my-9 text-4xl w-full text-center flex items-center justify-center'>
             <StackedText text="OUR TEAM" fontSize='80px' />

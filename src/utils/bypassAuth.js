@@ -1,63 +1,67 @@
 /**
- * TEMPORARY AUTHENTICATION BYPASS FOR FRONTEND TESTING
+ * AUTHENTICATION BYPASS & TEST SEED DATA FOR PROMPTATHON
  * 
- * To disable this bypass and restore real Firebase authentication,
- * set BYPASS_AUTH to false below, or set NEXT_PUBLIC_BYPASS_AUTH=false in .env.local.
+ * Used for local development and testing without live Firebase credentials.
+ * Real Firebase authentication can be used side-by-side.
  */
 export const BYPASS_AUTH =
 	process.env.NEXT_PUBLIC_BYPASS_AUTH !== undefined
 		? process.env.NEXT_PUBLIC_BYPASS_AUTH === "true"
-		: true; // Default to true for testing frontend without Firebase credentials
+		: true;
 
 export const MOCK_USER = {
-	uid: "demo-user-123",
-	email: "alex.johnson@cbit.ac.in",
+	uid: "demo-promptathon-user-001",
+	email: "alex.johnson@prompttechies.in",
 	displayName: "Alex Johnson",
 };
 
-export const MOCK_TEAM_DATA = {
-	teamName: "Code Spartans",
-	createdAt: {
-		toDate: () => new Date("2024-10-01T10:00:00Z"),
-	},
-	updatedAt: {
-		toDate: () => new Date("2024-10-15T15:30:00Z"),
-	},
+export const createDefault3MemberTeam = (leaderUser = MOCK_USER) => ({
+	teamName: "Neural Hackers",
+	teamLeaderId: leaderUser?.uid || "demo-promptathon-user-001",
+	totalParticipants: 3,
+	createdAt: new Date("2026-09-01T10:00:00Z"),
+	updatedAt: new Date("2026-09-10T12:00:00Z"),
+	techStack: ["Next.js", "Gemini API", "Python", "Tailwind CSS", "LangChain"],
+	otherTechStack: "Framer Motion, Vector DBs, LiveKit",
 	participants: [
 		{
-			name: "Alex Johnson",
-			email: "alex.johnson@cbit.ac.in",
+			participantId: "participant_1",
+			name: leaderUser?.displayName || "Alex Johnson",
+			email: leaderUser?.email || "alex.johnson@prompttechies.in",
 			phone: "+91 9876543210",
-			rollNo: "160121733001",
-			institution: "CBIT",
-			branch: "CSE",
+			rollNo: "PT2026-AI-01",
+			institution: "Prompt Techies University",
+			branch: "Artificial Intelligence & Data Science",
 			yearOfStudy: "3rd Year",
-			section: "CSE-1",
+			section: "AI-1",
 			isTeamLeader: true,
 		},
 		{
+			participantId: "participant_2",
 			name: "Sam Smith",
-			email: "sam.smith@cbit.ac.in",
+			email: "sam.smith@prompttechies.in",
 			phone: "+91 9876543211",
-			rollNo: "160121733002",
-			institution: "CBIT",
-			branch: "IT",
+			rollNo: "PT2026-CS-42",
+			institution: "Prompt Techies University",
+			branch: "Computer Science & Engineering",
 			yearOfStudy: "3rd Year",
-			section: "IT-2",
+			section: "CSE-2",
 			isTeamLeader: false,
 		},
 		{
+			participantId: "participant_3",
 			name: "Taylor Swift",
-			email: "taylor@cbit.ac.in",
+			email: "taylor.swift@prompttechies.in",
 			phone: "+91 9876543212",
-			rollNo: "160121733003",
-			institution: "CBIT",
-			branch: "ECE",
+			rollNo: "PT2026-IT-18",
+			institution: "Prompt Techies University",
+			branch: "Information Technology",
 			yearOfStudy: "3rd Year",
-			section: "ECE-1",
+			section: "IT-1",
 			isTeamLeader: false,
 		},
 	],
-	techStack: ["Next.js", "React", "Tailwind CSS", "Firebase", "Python"],
-	otherTechStack: "Framer Motion, GSAP, Node.js",
-};
+});
+
+export const MOCK_TEAM_DATA = createDefault3MemberTeam(MOCK_USER);
+

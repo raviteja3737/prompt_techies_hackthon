@@ -10,11 +10,18 @@ import {
 import Logo from "./assets/prompt_techies_logo.png";
 import cn from "@/utils/cn";
 import Link from "next/link";
+import SectionDividerBlur from "@/components/ui/section-divider-blur";
 
 export default function Footer() {
 	return (
-		<footer>
-			<div className="bg-on-surface text-base">
+		<footer className="relative bg-[#070c18] text-base overflow-hidden">
+			{/* Seamless optical blur divider from Get In Touch */}
+			<SectionDividerBlur className="absolute top-0 inset-x-0 -translate-y-1/2 z-20" />
+
+			{/* Feathered top edge gradient mask */}
+			<div className="pointer-events-none absolute inset-x-0 top-0 h-36 md:h-52 bg-gradient-to-b from-[#070c18] via-[#070c18]/80 to-transparent z-[5]" />
+
+			<div className="relative z-10 bg-gradient-to-b from-[#070c18] via-[#050a14] to-[#040810] text-base">
 				<div
 					className={cn(
 						"container mx-auto px-6 py-8",

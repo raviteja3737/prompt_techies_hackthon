@@ -415,7 +415,7 @@ export default function KineticGrid({
       ref={containerRef}
       className={cn(
         "relative w-full min-h-screen overflow-hidden",
-        "bg-[#000000]",
+        "bg-[#070c18]",
         className,
       )}
     >

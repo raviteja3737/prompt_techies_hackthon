@@ -10,6 +10,7 @@ import Tracks from "@/components/Tracks";
 import { ChatProvider } from "@/components/chatcontext";
 
 import Timer from "@/components/Timer";
+import SectionDividerBlur from "@/components/ui/section-divider-blur";
 
 export default function Home() {
 	return (
@@ -28,17 +29,25 @@ export default function Home() {
 						<Timer launchDate="2026-09-26T16:00:00" />
 					</section>
 
+					<SectionDividerBlur />
+
 					<section id="tracks">
 						<Tracks />
 					</section>
+
+					<SectionDividerBlur />
 
 					<section id="mentors">
 						<Mentors />
 					</section>
 
+					<SectionDividerBlur />
+
 					<section id="timeline">
 						<TimelineOld />
 					</section>
+
+					<SectionDividerBlur />
 
 					<section id="contact">
 						<ContactUs />

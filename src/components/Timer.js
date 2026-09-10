@@ -3,9 +3,19 @@
 import React, { useEffect, useRef } from "react";
 import { motion, useInView, useAnimation } from "framer-motion";
 import "./styles/timer.css";
+import dynamic from "next/dynamic";
 import StackedText from "./StackedText";
-import { AnimatedCountdown } from "@/components/ui/animated-countdown";
 import SmokeyBackground from "@/components/ui/smokey-background";
+
+const AnimatedCountdown = dynamic(
+	() => import("@/components/ui/animated-countdown").then((mod) => mod.AnimatedCountdown),
+	{
+		ssr: false,
+		loading: () => (
+			<div className="h-28 w-full max-w-xl mx-auto rounded-3xl bg-black/40 border border-primary/30 backdrop-blur-xl animate-pulse" />
+		),
+	}
+);
 
 const Timer = ({
 	launchDate = "2026-09-26T16:00:00",
