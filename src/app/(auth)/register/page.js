@@ -12,18 +12,13 @@ import Link from "next/link";
 
 const RegisterPage = () => {
 	const router = useRouter();
-	const { user, isRegistered, loginDemoUser } = useAuth();
+	const { user, isRegistered } = useAuth();
 
 	useEffect(() => {
 		if (user && isRegistered) {
 			router.push("/teamdetails");
 		}
 	}, [user, isRegistered, router]);
-
-	const handleBypass = () => {
-		if (loginDemoUser) loginDemoUser();
-		router.push("/teamdetails");
-	};
 
 	return (
 		<div className="min-h-screen bg-[#060a12] text-white flex flex-col items-center justify-center px-4 py-16 relative overflow-hidden">
@@ -64,15 +59,6 @@ const RegisterPage = () => {
 						<span>Proceed to Register / Login</span>
 						<ArrowRight className="w-4 h-4" />
 					</Link>
-
-					<button
-						type="button"
-						onClick={handleBypass}
-						className="w-full py-2.5 px-4 rounded-lg font-semibold text-black bg-gradient-to-r from-[#00c8ff] to-[#38bdf8] hover:shadow-[0_0_20px_rgba(0,200,255,0.5)] transition-all flex items-center justify-center gap-2 text-xs"
-					>
-						<ShieldCheck className="w-4 h-4 text-black" />
-						<span>Developer Bypass: Quick 3-Member Team View</span>
-					</button>
 				</div>
 
 				<hr className="border-white/10" />

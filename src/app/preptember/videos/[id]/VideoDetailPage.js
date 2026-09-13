@@ -1,29 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../firebase";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import "./videostyles.css";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
-import TypingEffect from "../../TypingEffect";
-import VideoPlayer from "./VideoPlayer";
-import cn from "@/utils/cn";
 import Link from "next/link";
-import Image from "next/image";
+import cn from "@/utils/cn";
 import { FaLeftLong } from "react-icons/fa6";
+import VideoPlayer from "./VideoPlayer";
+import "./videostyles.css";
 
 async function getVideo(id) {
-	const docRef = doc(db, "videos", id);
-	const docSnap = await getDoc(docRef);
-
-	if (docSnap.exists()) {
-		return { id: docSnap.id, ...docSnap.data() };
-	} else {
-		return null;
-	}
+	return null;
 }
 
 export default function VideoDetailPage({ params }) {

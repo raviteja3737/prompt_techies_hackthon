@@ -76,9 +76,11 @@ const Navbar = () => {
 	const navItems = [
 		{ href: "#about", label: "About" },
 		{ href: "#tracks", label: "Tracks" },
-		{ href: "#mentors", label: "Mentors" },
+		{ href: "/leaderboard", label: "Leaderboard" },
+		{ href: "/networking", label: "Networking" },
+		{ href: "/announcements", label: "Announcements" },
 		{ href: "#timeline", label: "Timeline" },
-		{ href: "#contact", label: "Get in Touch" },
+		{ href: "#contact", label: "Contact" },
 	];
 
 	return (
@@ -152,7 +154,9 @@ const Navbar = () => {
 						<Link
 							key={item.href}
 							href={
-								pathname === "/" ? item.href : `/${item.href}`
+								item.href.startsWith("#")
+									? (pathname === "/" ? item.href : `/${item.href}`)
+									: item.href
 							}
 							className={cn(
 								navTransparent
@@ -270,9 +274,9 @@ const Navbar = () => {
 									<Link
 										key={item.href}
 										href={
-											pathname === "/"
-												? item.href
-												: `/${item.href}`
+											item.href.startsWith("#")
+												? (pathname === "/" ? item.href : `/${item.href}`)
+												: item.href
 										}
 										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-on-surface hover:bg-surface-container-low"
 										onClick={() => setMenuOpen(false)}

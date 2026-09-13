@@ -7,11 +7,8 @@ import bgtop from "./assets/bg-hero-top.svg";
 import Image from "next/image";
 import { FaCircleArrowUp } from "react-icons/fa6";
 import TypingEffect from "./TypingEffect";
-import { collection, getDocs } from "../firebase";
-import { db } from "../firebase";
 import Link from "next/link";
 import StackedText from "@/components/StackedText";
-import { orderBy, query } from "firebase/firestore";
 import { SOCIAL_LINKS } from "@/utils/socialLinks";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -21,33 +18,7 @@ const ScrollingHeroSection = () => {
 	const wordsRef = useRef(null);
 	const arrowRef = useRef(null);
 	const [videos, setVideos] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-
-	useEffect(() => {
-		const fetchVideos = async () => {
-			setIsLoading(true);
-			try {
-				const querySnapshot = await getDocs(
-					query(
-						collection(db, "videos"),
-						orderBy("releaseDate", "asc")
-					)
-				);
-				const videoList = querySnapshot.docs.map((doc) => ({
-					id: doc.id,
-					...doc.data(),
-				}));
-				setVideos(videoList);
-			} catch (error) {
-				setIsLoading(false);
-				setVideos([]);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		fetchVideos();
-	}, []);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		const section = sectionRef.current;
