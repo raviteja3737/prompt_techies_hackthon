@@ -1,0 +1,347 @@
+// Promptothon — Prisma schema
+// Backs every model referenced by the existing controllers/services:
+// auth.controller (User, Team, TeamMember), team.controller (Team, TeamMember, Track, Submission),
+// tracks.controller (Track), leaderboard.service (Team, TeamMember, Evaluation),
+// anonymizer (Evaluation.juryId), sockets/index (SystemSetting), auditLog (AuditLog).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Supabase: DATABASE_URL is the pooled (pgbouncer, port 6543) connection
+  // used at runtime by every query; DIRECT_URL is the unpooled connection
+  // (port 5432) Prisma needs for `migrate`/`db push` because pgbouncer's
+  // transaction pooling mode doesn't support prepared statements/advisory
+  // locks that migrations rely on. See README "Supabase setup".
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum GlobalRole {
+  PARTICIPANT
+  JURY
+  ADMIN
+}
+
+enum TeamRole {
+  LEADER
+  MEMBER
+}
+
+enum SubmissionStatus {
+  DRAFT
+  SUBMITTED
+}
+
+enum EvaluationStatus {
+  DRAFT
+  LOCKED
+}
+
+enum AnnouncementPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum NotificationType {
+  ANNOUNCEMENT
+  JURY_ASSIGNED
+  EVALUATION_LOCKED
+  CONNECTION_REQUEST
+  SYSTEM
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  passwordHash  String
+  role          GlobalRole @default(PARTICIPANT)
+
+  college       String?
+  skills        String[] @default([])
+  githubUrl     String?
+  linkedinUrl   String?
+
+  // Solo participants opt into the public matchmaking directory instead
+  // of being bound to a team at registration time.
+  isSolo        Boolean  @default(false)
+
+  // Simplest possible check-in mechanism for the networking directory:
+  // set once by the participant themselves (POST /api/networking/check-in).
+  // Only checked-in participants are discoverable by other attendees.
+  checkedInAt   DateTime?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  leadingTeams  Team[]        @relation("TeamLeader")
+  teamMember    TeamMember?
+  evaluations   Evaluation[]  @relation("JuryEvaluations")
+  auditLogs     AuditLog[]
+  juryAssignments JuryAssignment[]
+
+  notifications       Notification[]
+  announcementsAuthored Announcement[]  @relation("AnnouncementAuthor")
+  magicLinkTokens      MagicLinkToken[]
+  connectionsSent      Connection[]     @relation("ConnectionRequester")
+  connectionsReceived  Connection[]     @relation("ConnectionRecipient")
+
+  @@index([role])
+  @@index([checkedInAt])
+}
+
+model Team {
+  id             String    @id @default(cuid())
+  name           String
+  inviteCode     String    @unique
+
+  leaderId       String
+  leader         User      @relation("TeamLeader", fields: [leaderId], references: [id])
+
+  capacityMax    Int       @default(4)
+  // Denormalized, atomically-updated counter (see team join flow) used to
+  // enforce capacity without a race between the "is there room?" read and
+  // the membership insert — two concurrent joins on the last open seat
+  // would otherwise both pass a plain COUNT(*) check.
+  memberCount    Int       @default(1)
+
+  trackId        String?
+  track          Track?    @relation(fields: [trackId], references: [id])
+  trackLockedAt  DateTime?
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  members        TeamMember[]
+  submission     Submission?
+  evaluations    Evaluation[]
+  juryAssignments JuryAssignment[]
+
+  @@index([trackId])
+}
+
+model TeamMember {
+  id       String   @id @default(cuid())
+
+  // One user can only ever belong to a single team.
+  userId   String   @unique
+  user     User     @relation(fields: [userId], references: [id])
+
+  teamId   String
+  team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  role     TeamRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  @@index([teamId])
+}
+
+model Track {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  guidelines  String?
+  datasetUrl  String?
+  capacity    Int?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  teams             Team[]
+  juryAssignments   JuryAssignment[]
+}
+
+model Submission {
+  id         String            @id @default(cuid())
+
+  teamId     String            @unique
+  team       Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  repoUrl    String
+  liveUrl    String?
+  videoUrl   String?
+  techTags   String[]          @default([])
+
+  // Populated after the client uploads to the presigned URL returned by
+  // POST /api/team/submission/upload-url. Metadata only — the file itself
+  // lives with the storage provider (see src/utils/storage.js).
+  pitchDeckKey String?
+  pitchDeckUrl String?
+
+  status     SubmissionStatus  @default(DRAFT)
+  submittedAt DateTime?
+
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+}
+
+// Jury pre-provisioning / queue allocation: which judge is assigned to
+// review which team, scoped by track specialty.
+model JuryAssignment {
+  id       String @id @default(cuid())
+
+  juryId   String
+  jury     User   @relation(fields: [juryId], references: [id])
+
+  teamId   String
+  team     Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  trackId  String?
+  track    Track? @relation(fields: [trackId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([juryId, teamId])
+  @@index([juryId])
+  @@index([teamId])
+}
+
+// Real record kept for admin audit trails — team_evaluations per spec.
+// juryId is stripped by anonymizer.aliasForEvaluations() before this ever
+// reaches a participant-facing response.
+model Evaluation {
+  id         String            @id @default(cuid())
+
+  teamId     String
+  team       Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  juryId     String
+  jury       User              @relation("JuryEvaluations", fields: [juryId], references: [id])
+
+  innovation Int // 0-25
+  technical  Int // 0-25
+  design     Int // 0-25
+  viability  Int // 0-25
+
+  feedback   String?
+
+  status     EvaluationStatus  @default(DRAFT)
+  lockedAt   DateTime?
+
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  // One evaluation per jury per team — resubmission overwrites the draft
+  // until it's locked.
+  @@unique([teamId, juryId])
+  @@index([teamId])
+  @@index([juryId])
+}
+
+// Admin toggles — scoresFrozen, trackSelectionDeadline, submissionDeadline
+// (see src/utils/settings.js for the typed accessors). Kept generic
+// (JSON value) so future flags don't need a migration.
+model SystemSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id])
+
+  action    String
+  metadata  Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([action])
+}
+
+// ---------------------------------------------------------------------------
+// Announcements (spec §10) — admin-authored, participant-facing dashboard
+// feed. `published` gates visibility; `scheduledAt` is optional future
+// publish time, enforced in the participant read query (never trust a
+// client-side countdown for this).
+// ---------------------------------------------------------------------------
+model Announcement {
+  id          String               @id @default(cuid())
+  title       String
+  message     String
+  priority    AnnouncementPriority @default(NORMAL)
+  published   Boolean              @default(true)
+  scheduledAt DateTime?
+
+  authorId    String?
+  author      User?                @relation("AnnouncementAuthor", fields: [authorId], references: [id])
+
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@index([published, scheduledAt])
+}
+
+// Lightweight in-app notification feed. An Announcement fan-out creates one
+// row per recipient so read state is per-user; also used for jury
+// assignment / connection-request pings.
+model Notification {
+  id        String           @id @default(cuid())
+
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      NotificationType
+  title     String
+  body      String?
+  read      Boolean          @default(false)
+  metadata  Json?
+
+  createdAt DateTime         @default(now())
+
+  @@index([userId, read])
+}
+
+// One-click networking connections (spec §9). Deliberately no
+// pending/accept workflow — "1-click connection" per spec — a connection
+// exists the moment either side clicks. Ordering-independent uniqueness
+// is enforced in the service layer (userAId/userBId always stored with
+// userAId < userBId) rather than the schema, since Prisma can't express
+// a symmetric unique constraint directly.
+model Connection {
+  id            String   @id @default(cuid())
+
+  requesterId   String
+  requester     User     @relation("ConnectionRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+
+  recipientId   String
+  recipient     User     @relation("ConnectionRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  // Canonical ordered pair (min, max) of the two user ids — guarantees a
+  // single row per unordered pair regardless of who initiated it.
+  userAId       String
+  userBId       String
+
+  createdAt     DateTime @default(now())
+
+  @@unique([userAId, userBId])
+  @@index([requesterId])
+  @@index([recipientId])
+}
+
+// Jury magic-link authentication (spec §11). Only the HMAC hash of the
+// token is ever persisted — the raw token exists solely in the outbound
+// email/response and is unrecoverable from the database.
+model MagicLinkToken {
+  id         String    @id @default(cuid())
+
+  juryId     String
+  jury       User      @relation(fields: [juryId], references: [id], onDelete: Cascade)
+
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+
+  createdAt  DateTime  @default(now())
+
+  @@index([juryId])
+  @@index([expiresAt])
+}

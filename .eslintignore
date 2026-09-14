@@ -1,0 +1,9 @@
+backend/**
+tests/**
+.agents/**
+node_modules/**
+.next/**
+out/**
+dist/**
+*.config.js
+*.config.mjs

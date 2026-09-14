@@ -1,0 +1,13 @@
+--- a/src/components/footer.js
++++ b/src/components/footer.js
+@@ -113,3 +113,3 @@
+ 								<p className="text-inverse-on-surface pl-5 text-lg">
+-									Join Prompt Techies to learn, build, and innovate. Whether you're a curious beginner or a seasoned developer, our ecosystem of AI bootcamps, national hackathons, and startup incubation is built for builders like you.
++									Join Prompt Techies to learn, build, and innovate. Whether you&apos;re a curious beginner or a seasoned developer, our ecosystem of AI bootcamps, national hackathons, and startup incubation is built for builders like you.
+ 								</p>
+--- a/src/app/preptember/page.js
++++ b/src/app/preptember/page.js
+@@ -96,2 +96,2 @@
+ 							time participant, we will introduce you to the basic
+-							technologies you'll need, so you're fully prepared
++							technologies you&apos;ll need, so you&apos;re fully prepared

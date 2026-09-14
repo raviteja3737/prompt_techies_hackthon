@@ -150,34 +150,70 @@ const Navbar = () => {
 					</button>
 				</div>
 				<div className="hidden lg:flex lg:gap-x-12">
-					{navItems.map((item) => (
-						<Link
-							key={item.href}
-							href={
-								item.href.startsWith("#")
-									? (pathname === "/" ? item.href : `/${item.href}`)
-									: item.href
-							}
-							className={cn(
-								navTransparent
-									? "text-inverse-on-surface hover:text-secondary"
-									: "text-on-surface hover:text-primary",
-								"transition-all duration-300 ease-in-out",
-								"text-sm font-semibold leading-6",
-								activeLink === item.href.split("#")[1]
-									? navTransparent
-										? "text-secondary border-b-2 border-secondary hover:text-secondary hover:border-secondary"
-										: "text-primary border-b-2 border-primary hover:text-primary"
-									: ""
-							)}
-						>
-							{item.label}
-						</Link>
-					))}
+					{navItems.map((item) => {
+						const isItemActive = item.href.startsWith("#")
+							? (pathname === "/" && activeLink === item.href.split("#")[1])
+							: pathname === item.href;
+
+						return (
+							<Link
+								key={item.href}
+								href={
+									item.href.startsWith("#")
+										? (pathname === "/" ? item.href : `/${item.href}`)
+										: item.href
+								}
+								className={cn(
+									navTransparent
+										? "text-inverse-on-surface hover:text-secondary"
+										: "text-on-surface hover:text-primary",
+									"transition-all duration-300 ease-in-out",
+									"text-sm font-semibold leading-6",
+									isItemActive
+										? navTransparent
+											? "text-secondary border-b-2 border-secondary hover:text-secondary hover:border-secondary"
+											: "text-primary border-b-2 border-primary hover:text-primary"
+										: ""
+								)}
+							>
+								{item.label}
+							</Link>
+						);
+					})}
 				</div>
 				<div className="hidden lg:flex lg:flex-1 lg:justify-end">
 					{user ? (
 						<div className="flex gap-2">
+							{user.role === "ADMIN" && (
+								<Link
+									href="/admin"
+									className={cn(
+										"text-sm font-semibold leading-6",
+										"text-primary px-4 py-2 rounded-full",
+										navTransparent
+											? "text-amber-400 bg-transparent hover:bg-amber-400/20 hover:text-amber-300"
+											: "bg-transparent hover:bg-amber-500/20 hover:text-amber-700",
+										"transition-colors duration-300 ease-in-out"
+									)}
+								>
+									Admin
+								</Link>
+							)}
+							{user.role === "JURY" && (
+								<Link
+									href="/jury"
+									className={cn(
+										"text-sm font-semibold leading-6",
+										"text-primary px-4 py-2 rounded-full",
+										navTransparent
+											? "text-purple-400 bg-transparent hover:bg-purple-400/20 hover:text-purple-300"
+											: "bg-transparent hover:bg-purple-500/20 hover:text-purple-700",
+										"transition-colors duration-300 ease-in-out"
+									)}
+								>
+									Jury Portal
+								</Link>
+							)}
 							<Link
 								href="/teamdetails"
 								className={cn(
@@ -207,19 +243,32 @@ const Navbar = () => {
 							</button>
 						</div>
 					) : (
-						<Link
-							href="/login"
-							className={cn(
-								"text-sm font-semibold leading-6",
-								"text-on-primary px-4 py-2 rounded-full",
-								navTransparent
-									? "bg-primary hover:bg-primary-container hover:text-on-primary"
-									: "bg-primary hover:bg-primary-container hover:text-on-primary",
-								"transition-colors duration-300 ease-in-out"
-							)}
-						>
-							Login <span aria-hidden="true">&rarr;</span>
-						</Link>
+						<div className="flex items-center gap-3">
+							<Link
+								href="/register"
+								className={cn(
+									"text-sm font-semibold leading-6",
+									"px-4 py-2 rounded-full border border-secondary text-secondary",
+									"hover:bg-secondary hover:text-black",
+									"transition-all duration-300 ease-in-out"
+								)}
+							>
+								Register
+							</Link>
+							<Link
+								href="/login"
+								className={cn(
+									"text-sm font-semibold leading-6",
+									"text-on-primary px-4 py-2 rounded-full",
+									navTransparent
+										? "bg-primary hover:bg-primary-container hover:text-on-primary"
+										: "bg-primary hover:bg-primary-container hover:text-on-primary",
+									"transition-colors duration-300 ease-in-out"
+								)}
+							>
+								Login <span aria-hidden="true">&rarr;</span>
+							</Link>
+						</div>
 					)}
 				</div>
 			</nav>
@@ -250,7 +299,6 @@ const Navbar = () => {
 							className="-m-2.5 rounded-md p-2.5 text-on-surface"
 							onClick={() => setMenuOpen(false)}
 						>
-							<span className="sr-only">Close menu</span>
 							<svg
 								className="h-6 w-6"
 								fill="none"
@@ -270,26 +318,118 @@ const Navbar = () => {
 					<div className="mt-6 flow-root">
 						<div className="-my-6 divide-y divide-gray-500/10">
 							<div className="space-y-2 py-6">
-								{navItems.map((item) => (
-									<Link
-										key={item.href}
-										href={
-											item.href.startsWith("#")
-												? (pathname === "/" ? item.href : `/${item.href}`)
-												: item.href
-										}
-										className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-on-surface hover:bg-surface-container-low"
-										onClick={() => setMenuOpen(false)}
-									>
-										{item.label}
-									</Link>
-								))}
+								{navItems.map((item) => {
+									const isItemActive = item.href.startsWith("#")
+										? (pathname === "/" && activeLink === item.href.split("#")[1])
+										: pathname === item.href;
+
+									return (
+										<Link
+											key={item.href}
+											href={
+												item.href.startsWith("#")
+													? (pathname === "/" ? item.href : `/${item.href}`)
+													: item.href
+											}
+											className={cn(
+												"-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7",
+												isItemActive
+													? "text-secondary bg-surface-container-low font-bold"
+													: "text-on-surface hover:bg-surface-container-low"
+											)}
+											onClick={() => setMenuOpen(false)}
+										>
+											{item.label}
+										</Link>
+									);
+								})}
 							</div>
-							<div className="py-6">
+							<div className="py-6 space-y-2">
 								{user ? (
+									<div className="flex flex-col gap-2 w-full">
+										{user.role === "ADMIN" && (
+											<Link
+												href="/admin"
+												onClick={() => setMenuOpen(false)}
+												className={cn(
+													"rounded-full px-3 py-2.5 flex-1",
+													"text-base font-semibold leading-7",
+													"transition-colors duration-300 ease-in-out",
+													"bg-amber-500/20 text-amber-300 hover:bg-amber-500/30",
+													"flex items-center justify-between"
+												)}
+											>
+												Admin
+												<FaRightLong />
+											</Link>
+										)}
+										{user.role === "JURY" && (
+											<Link
+												href="/jury"
+												onClick={() => setMenuOpen(false)}
+												className={cn(
+													"rounded-full px-3 py-2.5 flex-1",
+													"text-base font-semibold leading-7",
+													"transition-colors duration-300 ease-in-out",
+													"bg-purple-500/20 text-purple-300 hover:bg-purple-500/30",
+													"flex items-center justify-between"
+												)}
+											>
+												Jury Portal
+												<FaRightLong />
+											</Link>
+										)}
+										<div className="flex gap-2 w-full">
+											<Link
+												href="/teamdetails"
+												onClick={() => setMenuOpen(false)}
+												className={cn(
+													"rounded-full px-3 py-2.5 flex-1",
+													"text-base font-semibold leading-7",
+													"transition-colors duration-300 ease-in-out",
+													"bg-primary text-on-primary hover:bg-primary-container focus:bg-primary-container",
+													"flex items-center justify-between"
+												)}
+											>
+												Team Details
+												<FaRightLong />
+											</Link>
+											<button
+												onClick={() => {
+													logout();
+													setMenuOpen(false);
+												}}
+												className={cn(
+													"block rounded-full px-3 py-2.5 flex-1",
+													"text-base font-semibold leading-7",
+													"transition-colors duration-300 ease-in-out",
+													"bg-red-400 text-on-primary hover:bg-red-500 focus:bg-red-500",
+													"flex items-center justify-between"
+												)}
+											>
+												Logout
+												<LogOutIcon />
+											</button>
+										</div>
+									</div>
+								) : (
 									<div className="flex gap-2 w-full">
 										<Link
-											href="/teamdetails"
+											href="/register"
+											className={cn(
+												"rounded-full px-3 py-2.5 flex-1",
+												"text-base font-semibold leading-7",
+												"transition-colors duration-300 ease-in-out",
+												"border border-secondary text-secondary hover:bg-secondary hover:text-black",
+												"flex items-center justify-between"
+											)}
+											onClick={() => setMenuOpen(false)}
+										>
+											Register
+											<FaRightLong />
+										</Link>
+										<Link
+											href="/login"
 											className={cn(
 												"rounded-full px-3 py-2.5 flex-1",
 												"text-base font-semibold leading-7",
@@ -297,39 +437,12 @@ const Navbar = () => {
 												"bg-primary text-on-primary hover:bg-primary-container focus:bg-primary-container",
 												"flex items-center justify-between"
 											)}
+											onClick={() => setMenuOpen(false)}
 										>
-											Team Details
+											Login
 											<FaRightLong />
 										</Link>
-										<button
-											onClick={logout}
-											className={cn(
-												"block rounded-full px-3 py-2.5 flex-1",
-												"text-base font-semibold leading-7",
-												"transition-colors duration-300 ease-in-out",
-												"bg-red-400 text-on-primary hover:bg-red-500 focus:bg-red-500",
-												"flex items-center justify-between"
-											)}
-										>
-											Logout
-											<LogOutIcon />
-										</button>
 									</div>
-								) : (
-									<Link
-										href="/login"
-										className={cn(
-											"-mx-3 block rounded-full px-3 py-2.5",
-											"text-base font-semibold leading-7",
-											"transition-colors duration-300 ease-in-out",
-											"bg-primary text-on-primary hover:bg-primary-container focus:bg-primary-container",
-											"flex items-center justify-between"
-										)}
-										onClick={() => setMenuOpen(false)}
-									>
-										Login
-										<FaRightLong />
-									</Link>
 								)}
 							</div>
 						</div>

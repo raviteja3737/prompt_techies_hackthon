@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { ArrowRight, Mail, Lock, User, Sparkles, ShieldCheck } from "lucide-react";
+import { ArrowRight, Mail, Lock, User, Sparkles, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import "../styles/registration.css";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -14,19 +14,31 @@ import Link from "next/link";
 const loginSchema = z.object({
   name: z.string().optional(),
   email: z.string().email({ message: "Please enter a valid email address" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
 });
 
 const LoginPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const router = useRouter();
   const { user, login, register: authRegister } = useAuth();
 
+  const redirectByRole = (role) => {
+    if (role === "ADMIN") {
+      router.push("/admin");
+    } else if (role === "JURY") {
+      router.push("/jury");
+    } else {
+      router.push("/teamdetails");
+    }
+  };
+
   useEffect(() => {
     if (user) {
-      router.push("/teamdetails");
+      redirectByRole(user.role);
     }
   }, [user, router]);
 
@@ -41,9 +53,9 @@ const LoginPage = () => {
   const handleQuickSeedLogin = async () => {
     setIsSubmitting(true);
     try {
-      await login("admin@promptothon.dev", "ChangeMe123!");
+      const res = await login("admin@promptothon.dev", "ChangeMe123!");
       toast.success("Logged in as Admin!");
-      router.push("/teamdetails");
+      redirectByRole(res?.user?.role || "ADMIN");
     } catch (err) {
       toast.error("Could not log in: " + (err.response?.data?.message || err.message));
     } finally {
@@ -55,18 +67,19 @@ const LoginPage = () => {
     setIsSubmitting(true);
     try {
       if (isSignUp) {
-        await authRegister({
+        const fallbackName = data.email.split("@")[0];
+        const res = await authRegister({
           intent: "solo",
-          name: data.name?.trim() || data.email.split("@")[0],
+          name: data.name?.trim() || (fallbackName.length >= 2 ? fallbackName : "Participant"),
           email: data.email.trim(),
           password: data.password,
         });
         toast.success("Account created successfully!");
-        router.push("/teamdetails");
+        redirectByRole(res?.user?.role || "PARTICIPANT");
       } else {
-        await login(data.email.trim(), data.password);
+        const res = await login(data.email.trim(), data.password);
         toast.success("Successfully logged in!");
-        router.push("/teamdetails");
+        redirectByRole(res?.user?.role || "PARTICIPANT");
       }
     } catch (error) {
       console.error("Auth error:", error);
@@ -153,13 +166,38 @@ const LoginPage = () => {
             <label className="text-xs text-slate-300 flex items-center gap-1">
               <Lock className="w-3.5 h-3.5 text-[#00c8ff]" /> Password
             </label>
-            <input
-              {...register("password")}
-              type="password"
-              placeholder="••••••••"
-              className="w-full px-3.5 py-2 rounded-lg bg-[#070c18] border border-white/15 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00c8ff] focus:ring-1 focus:ring-[#00c8ff] transition-all"
-            />
+            <div className="relative">
+              <input
+                {...register("password")}
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="w-full px-3.5 py-2 pr-10 rounded-lg bg-[#070c18] border border-white/15 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00c8ff] focus:ring-1 focus:ring-[#00c8ff] transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
             {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
+          </div>
+
+          <div className="flex items-center justify-between text-xs text-slate-400">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="rounded bg-[#070c18] border-white/20 text-[#00c8ff] focus:ring-[#00c8ff] focus:ring-offset-0"
+              />
+              <span>Remember Me</span>
+            </label>
+            <Link href="/register" className="text-[#00c8ff] hover:underline">
+              Don&apos;t have an account? Register here
+            </Link>
           </div>
 
           <button
@@ -183,10 +221,18 @@ const LoginPage = () => {
           </button>
         </div>
 
-        <div className="text-center pt-1">
-          <Link href="/" className="text-xs text-slate-400 hover:text-[#00c8ff] transition-colors">
-            &larr; Back to Promptathon Home
-          </Link>
+        <div className="text-center pt-1 space-y-2">
+          <p className="text-xs text-slate-400">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="text-[#00c8ff] font-semibold hover:underline">
+              Register here
+            </Link>
+          </p>
+          <div>
+            <Link href="/" className="text-xs text-slate-400 hover:text-[#00c8ff] transition-colors">
+              &larr; Back to Promptathon Home
+            </Link>
+          </div>
         </div>
       </div>
       <Toaster position="top-center" />

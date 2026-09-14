@@ -22,6 +22,7 @@ import {
 	FileText,
 	Copy,
 	Check,
+	AlertTriangle,
 } from "lucide-react";
 import "../styles/registration.css";
 import { useRouter } from "next/navigation";
@@ -40,9 +41,13 @@ export default function TeamDetails() {
 	const [selectedTrackId, setSelectedTrackId] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
 	const [isLockingTrack, setIsLockingTrack] = useState(false);
+	const [showLockConfirmModal, setShowLockConfirmModal] = useState(false);
 	const [joinCodeInput, setJoinCodeInput] = useState("");
 	const [isJoining, setIsJoining] = useState(false);
 	const [copied, setCopied] = useState(false);
+	const [noTeamTab, setNoTeamTab] = useState("join");
+	const [teamNameInput, setTeamNameInput] = useState("");
+	const [isCreatingTeam, setIsCreatingTeam] = useState(false);
 
 	const fetchTeamAndTracks = useCallback(async () => {
 		if (!user) return;
@@ -54,10 +59,11 @@ export default function TeamDetails() {
 			]);
 
 			if (teamRes.status === "fulfilled") {
-				setTeamData(teamRes.value.data?.team || null);
+				const team = teamRes.value.data?.team || null;
+				setTeamData(team);
 				setMyRole(teamRes.value.data?.myRole || "MEMBER");
-				if (teamRes.value.data?.team?.trackId) {
-					setSelectedTrackId(teamRes.value.data.team.trackId);
+				if (team?.trackId) {
+					setSelectedTrackId(team.trackId);
 				}
 			} else {
 				setTeamData(null);
@@ -91,6 +97,8 @@ export default function TeamDetails() {
 			const res = await api.post("/api/team/track-lock", { trackId: selectedTrackId });
 			toast.success("Track successfully locked!");
 			setTeamData(res.data.team);
+			await refreshUserData();
+			await fetchTeamAndTracks();
 		} catch (err) {
 			toast.error(err.response?.data?.message || "Failed to lock track");
 		} finally {
@@ -101,14 +109,15 @@ export default function TeamDetails() {
 	const handleJoinTeam = async (e) => {
 		e.preventDefault();
 		if (!joinCodeInput.trim()) {
-			toast.error("Please enter a 6-character team invite code.");
+			toast.error("Please enter a team invite code.");
 			return;
 		}
 		setIsJoining(true);
 		try {
-			await api.post("/api/team/join", { teamCode: joinCodeInput.trim().toUpperCase() });
+			await api.post("/api/team/join", { teamCode: joinCodeInput.trim() });
 			toast.success("Successfully joined team!");
 			setJoinCodeInput("");
+			await refreshUserData();
 			await fetchTeamAndTracks();
 		} catch (err) {
 			toast.error(err.response?.data?.message || "Failed to join team");
@@ -117,12 +126,40 @@ export default function TeamDetails() {
 		}
 	};
 
+	const handleCreateTeam = async (e) => {
+		e.preventDefault();
+		if (!teamNameInput.trim() || teamNameInput.trim().length < 2) {
+			toast.error("Please enter a team name (at least 2 characters).");
+			return;
+		}
+		setIsCreatingTeam(true);
+		try {
+			await api.post("/api/team", { name: teamNameInput.trim() });
+			toast.success("Team successfully created!");
+			setTeamNameInput("");
+			await refreshUserData();
+			await fetchTeamAndTracks();
+		} catch (err) {
+			toast.error(err.response?.data?.message || "Failed to create team");
+		} finally {
+			setIsCreatingTeam(false);
+		}
+	};
+
 	const copyTeamCode = () => {
-		if (teamData?.code) {
-			navigator.clipboard.writeText(teamData.code);
-			setCopied(true);
-			toast.success("Team code copied to clipboard!");
-			setTimeout(() => setCopied(false), 2000);
+		const code = teamData?.inviteCode || teamData?.code;
+		if (code) {
+			navigator.clipboard
+				.writeText(code)
+				.then(() => {
+					setCopied(true);
+					toast.success("Team code copied to clipboard!");
+					setTimeout(() => setCopied(false), 2000);
+				})
+				.catch((err) => {
+					console.error("Clipboard write failed:", err);
+					toast.error("Could not copy team code to clipboard");
+				});
 		}
 	};
 
@@ -224,36 +261,91 @@ export default function TeamDetails() {
 				</div>
 
 				{!teamData ? (
-					/* No Team State -> Join Team Option */
+					/* No Team State -> Join or Create Team Options */
 					<div className="p-8 bg-[#0d1525]/85 backdrop-blur-xl border border-white/10 rounded-2xl space-y-6 text-center max-w-lg mx-auto">
 						<div className="w-14 h-14 mx-auto rounded-full bg-[#00c8ff]/10 border border-[#00c8ff]/30 flex items-center justify-center text-[#00c8ff]">
 							<Users className="w-7 h-7" />
 						</div>
-						<div className="space-y-2">
-							<h2 className="text-2xl font-bold font-orbitron text-white">Join a Team</h2>
-							<p className="text-xs text-slate-400">
-								Enter the 6-character team invite code provided by your team leader to join their roster.
-							</p>
+
+						{/* Toggle buttons between Join Team and Create Team */}
+						<div className="flex rounded-lg bg-[#070c18] p-1 border border-white/10">
+							<button
+								type="button"
+								onClick={() => setNoTeamTab("join")}
+								className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${
+									noTeamTab === "join" ? "bg-[#00c8ff] text-black font-semibold shadow" : "text-slate-400 hover:text-white"
+								}`}
+							>
+								Join a Team
+							</button>
+							<button
+								type="button"
+								onClick={() => setNoTeamTab("create")}
+								className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${
+									noTeamTab === "create" ? "bg-[#00c8ff] text-black font-semibold shadow" : "text-slate-400 hover:text-white"
+								}`}
+							>
+								Create a Team
+							</button>
 						</div>
 
-						<form onSubmit={handleJoinTeam} className="space-y-4">
-							<input
-								type="text"
-								maxLength={6}
-								value={joinCodeInput}
-								onChange={(e) => setJoinCodeInput(e.target.value.toUpperCase())}
-								placeholder="e.g. PT26AB"
-								className="w-full text-center tracking-widest text-lg font-bold font-mono px-4 py-3 rounded-lg bg-[#070c18] border border-white/15 text-white placeholder-slate-600 focus:outline-none focus:border-[#00c8ff]"
-							/>
-							<button
-								type="submit"
-								disabled={isJoining}
-								className="w-full py-2.5 px-4 rounded-lg font-semibold text-black bg-[#00c8ff] hover:bg-[#38bdf8] transition-all text-sm flex items-center justify-center gap-2 disabled:opacity-60"
-							>
-								<span>{isJoining ? "Joining Team..." : "Join Team"}</span>
-								<ArrowRight className="w-4 h-4" />
-							</button>
-						</form>
+						{noTeamTab === "join" ? (
+							<div className="space-y-4">
+								<div className="space-y-2">
+									<h2 className="text-2xl font-bold font-orbitron text-white">Join a Team</h2>
+									<p className="text-xs text-slate-400">
+										Enter the team invite code provided by your team leader to join their roster.
+									</p>
+								</div>
+
+								<form onSubmit={handleJoinTeam} className="space-y-4">
+									<input
+										type="text"
+										maxLength={20}
+										value={joinCodeInput}
+										onChange={(e) => setJoinCodeInput(e.target.value.toUpperCase())}
+										placeholder="e.g. PRMPT-AB12CD"
+										className="w-full text-center tracking-widest text-lg font-bold font-mono px-4 py-3 rounded-lg bg-[#070c18] border border-white/15 text-white placeholder-slate-600 focus:outline-none focus:border-[#00c8ff]"
+									/>
+									<button
+										type="submit"
+										disabled={isJoining}
+										className="w-full py-2.5 px-4 rounded-lg font-semibold text-black bg-[#00c8ff] hover:bg-[#38bdf8] transition-all text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+									>
+										<span>{isJoining ? "Joining Team..." : "Join Team"}</span>
+										<ArrowRight className="w-4 h-4" />
+									</button>
+								</form>
+							</div>
+						) : (
+							<div className="space-y-4">
+								<div className="space-y-2">
+									<h2 className="text-2xl font-bold font-orbitron text-white">Create a Team</h2>
+									<p className="text-xs text-slate-400">
+										Form a new team as Team Leader and invite up to 3 teammates.
+									</p>
+								</div>
+
+								<form onSubmit={handleCreateTeam} className="space-y-4">
+									<input
+										type="text"
+										maxLength={60}
+										value={teamNameInput}
+										onChange={(e) => setTeamNameInput(e.target.value)}
+										placeholder="e.g. Neural Explorers"
+										className="w-full text-center text-lg font-bold font-orbitron px-4 py-3 rounded-lg bg-[#070c18] border border-white/15 text-white placeholder-slate-600 focus:outline-none focus:border-[#00c8ff]"
+									/>
+									<button
+										type="submit"
+										disabled={isCreatingTeam}
+										className="w-full py-2.5 px-4 rounded-lg font-semibold text-black bg-[#00c8ff] hover:bg-[#38bdf8] transition-all text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+									>
+										<span>{isCreatingTeam ? "Creating Team..." : "Create Team"}</span>
+										<PlusCircle className="w-4 h-4" />
+									</button>
+								</form>
+							</div>
+						)}
 					</div>
 				) : (
 					/* Active Team Dashboard */
@@ -264,12 +356,12 @@ export default function TeamDetails() {
 								<div className="flex items-center justify-between">
 									<span className="text-xs uppercase tracking-wider text-slate-400 font-semibold">Team Code</span>
 									<span className="text-xs px-2.5 py-0.5 rounded-full bg-[#00c8ff]/10 text-[#00c8ff] border border-[#00c8ff]/30 font-semibold">
-										{teamData.members?.length || 1} / 3 Members
+										{teamData.members?.length || 1} / {teamData?.capacityMax || 4} Members
 									</span>
 								</div>
 								<div className="flex items-center justify-between p-3 rounded-xl bg-[#070c18] border border-white/10">
 									<span className="font-mono text-xl font-bold tracking-widest text-white">
-										{teamData.code || "N/A"}
+										{teamData?.inviteCode || teamData?.code || "N/A"}
 									</span>
 									<button
 										type="button"
@@ -292,16 +384,16 @@ export default function TeamDetails() {
 									<h2 className="text-sm font-bold uppercase tracking-wider text-white">Problem Track</h2>
 								</div>
 
-								{teamData.trackLocked ? (
+								{Boolean(teamData?.trackLocked || teamData?.trackLockedAt) ? (
 									<div className="p-4 rounded-xl bg-green-950/30 border border-green-500/30 space-y-2">
 										<div className="flex items-center gap-2 text-green-400 font-semibold text-xs">
 											<Lock className="w-3.5 h-3.5" /> Track Locked
 										</div>
 										<p className="text-sm font-bold text-white">
-											{teamData.track?.title || "Assigned Problem Track"}
+											{teamData.track?.title || tracks.find((t) => t.id === teamData?.trackId)?.title || "Assigned Problem Track"}
 										</p>
 										<p className="text-xs text-slate-300">
-											{teamData.track?.description || "Track selection is permanent."}
+											{teamData.track?.description || tracks.find((t) => t.id === teamData?.trackId)?.description || "Track selection is permanent."}
 										</p>
 									</div>
 								) : (
@@ -324,7 +416,7 @@ export default function TeamDetails() {
 										</select>
 										{isLeader && (
 											<button
-												onClick={handleLockTrack}
+												onClick={() => setShowLockConfirmModal(true)}
 												disabled={isLockingTrack || !selectedTrackId}
 												className="w-full py-2 px-3 rounded-lg text-xs font-semibold text-black bg-[#00c8ff] hover:bg-[#38bdf8] transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
 											>
@@ -346,7 +438,7 @@ export default function TeamDetails() {
 										<p className="text-xs text-slate-400">All registered team members</p>
 									</div>
 									<span className="text-xs px-3 py-1 rounded-full bg-[#00c8ff]/10 text-[#00c8ff] border border-[#00c8ff]/30 font-semibold">
-										Max 3 Members
+										Max {teamData?.capacityMax || 4} Members
 									</span>
 								</div>
 
@@ -398,6 +490,50 @@ export default function TeamDetails() {
 					</div>
 				)}
 			</div>
+
+			{/* Confirmation Modal before permanent track lock */}
+			{showLockConfirmModal && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+					<div className="w-full max-w-md p-6 bg-[#0d1525] border border-amber-500/40 rounded-2xl shadow-2xl space-y-4">
+						<div className="flex items-center gap-3 text-amber-400">
+							<AlertTriangle className="w-6 h-6" />
+							<h3 className="text-lg font-bold font-orbitron text-white">Confirm Track Lock</h3>
+						</div>
+						<p className="text-xs text-slate-300 leading-relaxed">
+							Are you sure you want to permanently lock your team&apos;s problem track to{" "}
+							<span className="text-[#00c8ff] font-semibold">
+								{tracks.find((t) => t.id === selectedTrackId)?.title || "Selected Track"}
+							</span>
+							?
+						</p>
+						<p className="text-xs text-red-400 font-semibold bg-red-950/30 p-3 rounded-lg border border-red-500/20 leading-relaxed">
+							⚠️ Warning: Track selection is permanent, one-way, and irreversible. Once locked, neither you nor any team member can change your track or problem statement.
+						</p>
+						<div className="flex items-center justify-end gap-3 pt-2">
+							<button
+								type="button"
+								onClick={() => setShowLockConfirmModal(false)}
+								disabled={isLockingTrack}
+								className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 transition-all"
+							>
+								Cancel
+							</button>
+							<button
+								type="button"
+								onClick={async () => {
+									await handleLockTrack();
+									setShowLockConfirmModal(false);
+								}}
+								disabled={isLockingTrack}
+								className="px-4 py-2 rounded-lg text-xs font-bold text-black bg-[#00c8ff] hover:bg-[#38bdf8] transition-all flex items-center gap-1.5"
+							>
+								<Lock className="w-3.5 h-3.5" />
+								<span>{isLockingTrack ? "Locking..." : "Confirm & Lock Permanently"}</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 			<Toaster position="top-center" />
 		</div>
 	);

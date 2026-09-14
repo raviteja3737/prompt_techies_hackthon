@@ -1,0 +1,444 @@
+{
+  "info": {
+    "name": "Promptothon Backend",
+    "description": "Full API coverage for the Promptothon backend. Uses collection variables {{baseUrl}}, {{leaderToken}}, {{memberToken}}, {{juryToken}}, {{adminToken}}, {{trackId}}, {{teamId}}, {{inviteCode}} which several requests populate automatically via test scripts.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "leaderToken", "value": "" },
+    { "key": "memberToken", "value": "" },
+    { "key": "juryToken", "value": "" },
+    { "key": "adminToken", "value": "" },
+    { "key": "inviteCode", "value": "" },
+    { "key": "teamId", "value": "" },
+    { "key": "trackId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        { "name": "GET /health", "request": { "method": "GET", "url": "{{baseUrl}}/health" } }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register — create team (leader)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('leaderToken', body.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"intent\": \"create\",\n  \"name\": \"Ada Lovelace\",\n  \"email\": \"ada+{{$timestamp}}@example.com\",\n  \"password\": \"SuperSecret123\",\n  \"teamName\": \"Team Analytical Engine\",\n  \"college\": \"Cambridge\",\n  \"skills\": [\"Python\", \"Rust\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/team/me (to grab inviteCode)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('inviteCode', body.team.inviteCode);",
+                  "pm.collectionVariables.set('teamId', body.team.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/team/me",
+            "header": [{ "key": "Authorization", "value": "Bearer {{leaderToken}}" }]
+          }
+        },
+        {
+          "name": "Register — join team (member)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('memberToken', body.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"intent\": \"join\",\n  \"name\": \"Bob\",\n  \"email\": \"bob+{{$timestamp}}@example.com\",\n  \"password\": \"SuperSecret123\",\n  \"teamCode\": \"{{inviteCode}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register — solo",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"intent\": \"solo\",\n  \"name\": \"Cy\",\n  \"email\": \"cy+{{$timestamp}}@example.com\",\n  \"password\": \"SuperSecret123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"ada@example.com\",\n  \"password\": \"SuperSecret123\"\n}" }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/me",
+            "header": [{ "key": "Authorization", "value": "Bearer {{leaderToken}}" }]
+          }
+        },
+        {
+          "name": "Logout",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/auth/logout" }
+        }
+      ]
+    },
+    {
+      "name": "Team",
+      "item": [
+        {
+          "name": "GET /api/team/me",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/team/me",
+            "header": [{ "key": "Authorization", "value": "Bearer {{leaderToken}}" }]
+          }
+        },
+        {
+          "name": "POST /api/team/join (solo -> team)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/team/join",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{memberToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"teamCode\": \"{{inviteCode}}\"\n}" }
+          }
+        },
+        {
+          "name": "POST /api/team/track-lock",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/team/track-lock",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{leaderToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"trackId\": \"{{trackId}}\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Submissions",
+      "item": [
+        {
+          "name": "POST /api/team/submission (draft)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/team/submission",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{leaderToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"repoUrl\": \"https://github.com/org/repo\",\n  \"liveUrl\": \"https://demo.example.com\",\n  \"videoUrl\": \"https://youtube.com/watch?v=demo\",\n  \"techTags\": [\"Next.js\", \"Python\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /api/team/submission (final)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/team/submission",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{leaderToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"repoUrl\": \"https://github.com/org/repo\",\n  \"submit\": true\n}" }
+          }
+        },
+        {
+          "name": "GET /api/team/submission",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/team/submission",
+            "header": [{ "key": "Authorization", "value": "Bearer {{leaderToken}}" }]
+          }
+        },
+        {
+          "name": "POST /api/team/submission/upload-url",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/team/submission/upload-url",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{leaderToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"contentType\": \"application/pdf\"\n}" }
+          }
+        },
+        {
+          "name": "POST /api/team/submission/pitch-deck",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/team/submission/pitch-deck",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{leaderToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"key\": \"pitch-decks/team-1/deck.pdf\",\n  \"url\": \"https://bucket.s3.amazonaws.com/pitch-decks/team-1/deck.pdf\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tracks",
+      "item": [
+        {
+          "name": "GET /api/tracks",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/tracks",
+            "header": [{ "key": "Authorization", "value": "Bearer {{leaderToken}}" }]
+          }
+        },
+        {
+          "name": "POST /api/tracks (admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["const body = pm.response.json();", "if (body.track) pm.collectionVariables.set('trackId', body.track.id);"] }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/tracks",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"AI Agents for Healthcare\",\n  \"description\": \"Build an AI agent for a real healthcare workflow.\",\n  \"guidelines\": \"Must use at least one LLM call.\",\n  \"datasetUrl\": \"https://example.com/dataset.csv\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/tracks/:id (admin)",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/tracks/{{trackId}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"description\": \"Updated description.\"\n}" }
+          }
+        },
+        {
+          "name": "DELETE /api/tracks/:id (admin)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/tracks/{{trackId}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Networking",
+      "item": [
+        {
+          "name": "POST /api/networking/check-in",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/networking/check-in",
+            "header": [{ "key": "Authorization", "value": "Bearer {{leaderToken}}" }]
+          }
+        },
+        {
+          "name": "GET /api/networking/attendees",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/networking/attendees?skill=Python&page=1&pageSize=20",
+            "header": [{ "key": "Authorization", "value": "Bearer {{memberToken}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jury",
+      "item": [
+        {
+          "name": "GET /api/jury/queue",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/jury/queue",
+            "header": [{ "key": "Authorization", "value": "Bearer {{juryToken}}" }]
+          }
+        },
+        {
+          "name": "POST /api/jury/evaluate (draft)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/jury/evaluate",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{juryToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"teamId\": \"{{teamId}}\",\n  \"innovation\": 20,\n  \"technical\": 18,\n  \"design\": 22,\n  \"viability\": 19,\n  \"feedback\": \"Solid execution.\",\n  \"lock\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "POST /api/jury/evaluate (lock)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/jury/evaluate",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{juryToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"teamId\": \"{{teamId}}\",\n  \"innovation\": 20,\n  \"technical\": 18,\n  \"design\": 22,\n  \"viability\": 19,\n  \"feedback\": \"Final.\",\n  \"lock\": true\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Leaderboard",
+      "item": [
+        { "name": "GET /api/leaderboard", "request": { "method": "GET", "url": "{{baseUrl}}/api/leaderboard" } },
+        { "name": "GET /api/leaderboard?trackId=", "request": { "method": "GET", "url": "{{baseUrl}}/api/leaderboard?trackId={{trackId}}" } }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "GET /api/admin/dashboard",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/dashboard",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "GET /api/admin/settings",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/settings",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "PATCH /api/admin/settings",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/admin/settings",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"submissionDeadline\": \"2026-12-31T23:59:59.000Z\"\n}" }
+          }
+        },
+        {
+          "name": "GET /api/admin/score-status",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/score-status",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "POST /api/admin/freeze-scores",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/admin/freeze-scores",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"frozen\": true\n}" }
+          }
+        },
+        {
+          "name": "GET /api/admin/jury-assignments",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/jury-assignments",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "POST /api/admin/jury-assignments",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/admin/jury-assignments",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"juryId\": \"<jury-user-id>\",\n  \"teamId\": \"{{teamId}}\",\n  \"trackId\": \"{{trackId}}\"\n}" }
+          }
+        },
+        {
+          "name": "DELETE /api/admin/jury-assignments/:id",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/admin/jury-assignments/<assignment-id>",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "GET /api/admin/audit-logs",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/audit-logs?page=1&pageSize=50",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import Boxes from "@/components/ui/background-boxes";
 import cn from "@/utils/cn";
 import TypingEffect2 from "./TypingEffect2";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/utils/contexts/AuthContext";
 
 export default function HeroMod() {
@@ -22,9 +23,12 @@ export default function HeroMod() {
 			<div className="relative z-20 flex flex-col items-center pointer-events-none px-4">
 				{/* Transparent Logo */}
 				<div className="flex flex-row items-center justify-center mb-2">
-					<img
+					<Image
 						src="/assets/prompt_techies_logo.png"
 						alt="Prompt Techies"
+						width={300}
+						height={170}
+						priority
 						className="h-[95px] md:h-[170px] w-auto object-contain drop-shadow-[0_0_35px_rgba(0,200,255,0.4)]"
 					/>
 				</div>
@@ -44,14 +48,14 @@ export default function HeroMod() {
 					<span className="text-white font-semibold">Prompt Techies!</span>
 				</p>
 
-				{/* Single Action Button */}
-				<div className="flex flex-col items-center justify-center mt-8 w-[30vh] pointer-events-auto">
+				{/* Action Buttons */}
+				<div className="flex flex-wrap items-center justify-center gap-4 mt-8 pointer-events-auto">
 					{user ? (
 						<Link
 							href="/teamdetails"
 							className={cn(
 								"bg-[#0a0a0a]/80 text-center border-secondary border-2 md:h-[7vh] text-secondary",
-								"px-8 py-2 rounded-full mt-4 hover:bg-secondary hover:text-[#0a0a0a]",
+								"px-8 py-2 rounded-full hover:bg-secondary hover:text-[#0a0a0a]",
 								"transition-all duration-300 shadow-primary-glow hover:shadow-primary-glow-hover",
 								"flex flex-col justify-center items-center font-semibold text-lg"
 							)}
@@ -59,18 +63,41 @@ export default function HeroMod() {
 							<span>Team Details</span>
 						</Link>
 					) : (
-						<Link
-							href="https://forms.gle/L2rvjg4DvLUY6PR26"
-							target="_blank"
-							className={cn(
-								"bg-[#0a0a0a]/80 text-center border-secondary border-2 md:h-[7vh] text-secondary",
-								"px-8 py-2 rounded-full mt-4 hover:bg-secondary hover:text-[#0a0a0a]",
-								"transition-all duration-300 shadow-primary-glow hover:shadow-primary-glow-hover",
-								"flex flex-col justify-center items-center font-semibold text-lg"
-							)}
-						>
-							<span>Register Now</span>
-						</Link>
+						<>
+							<Link
+								href="/register"
+								className={cn(
+									"bg-secondary text-[#0a0a0a] text-center border-secondary border-2 md:h-[7vh]",
+									"px-8 py-2 rounded-full hover:bg-transparent hover:text-secondary",
+									"transition-all duration-300 shadow-primary-glow hover:shadow-primary-glow-hover",
+									"flex flex-col justify-center items-center font-semibold text-lg"
+								)}
+							>
+								<span>Register Now</span>
+							</Link>
+							<Link
+								href="/#about"
+								className={cn(
+									"bg-[#0a0a0a]/80 text-center border-white/20 border-2 md:h-[7vh] text-white",
+									"px-8 py-2 rounded-full hover:border-[#00c8ff] hover:text-[#00c8ff]",
+									"transition-all duration-300",
+									"flex flex-col justify-center items-center font-semibold text-lg"
+								)}
+							>
+								<span>Learn More</span>
+							</Link>
+							<Link
+								href="/networking"
+								className={cn(
+									"bg-[#0a0a0a]/80 text-center border-white/20 border-2 md:h-[7vh] text-slate-300",
+									"px-8 py-2 rounded-full hover:border-secondary hover:text-secondary",
+									"transition-all duration-300",
+									"flex flex-col justify-center items-center font-semibold text-lg"
+								)}
+							>
+								<span>Join Community</span>
+							</Link>
+						</>
 					)}
 				</div>
 			</div>

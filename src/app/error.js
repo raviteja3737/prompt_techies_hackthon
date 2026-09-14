@@ -11,8 +11,8 @@ import { useEffect } from "react";
 
 export default function Error({ error, reset }) {
 	useEffect(() => {
-		console.clear();
-	});
+		console.error(error);
+	}, [error]);
 	return (
 		<main
 			className={cn(

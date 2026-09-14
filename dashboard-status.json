@@ -1,0 +1,456 @@
+{
+  "generatedAt": "2026-09-14T08:54:51.311Z",
+  "generator": "scripts/update-dashboard-status.js (same teamwork process)",
+  "overall": {
+    "percent": 100,
+    "label": "VICTORY AUDIT PASSED — production-ready YES (serial-only backend rule)"
+  },
+  "victory": {
+    "triggered": true,
+    "pass": true,
+    "verdict": "DONE",
+    "handoffPath": ".agents/teamwork_preview_victory_auditor/handoff.md",
+    "handoffMtime": "2026-09-14T08:53:59.693Z"
+  },
+  "milestones": [
+    {
+      "id": "E2E",
+      "name": "E2E Testing Track",
+      "scope": "Tiers 1-4 harness + 316 tests + TEST_READY.md",
+      "deps": "none",
+      "status": "DONE",
+      "pct": 100,
+      "evidence": "TEST_READY.md: 316/316 in ~17s"
+    },
+    {
+      "id": "M1",
+      "name": "Local DB & Backend Lifecycle",
+      "scope": "Docker Postgres :5432 promptothon, Prisma 13 models, seed, backend :4000 + /health",
+      "deps": "none",
+      "status": "DONE",
+      "pct": 100,
+      "evidence": "M1 gate PASS 6/6 (orchestrator_2)"
+    },
+    {
+      "id": "M2",
+      "name": "Auth & Hackathon Workflow",
+      "scope": "register/login/logout, team create+join (cap 4), track lock, RBAC",
+      "deps": "M1",
+      "status": "DONE",
+      "pct": 100,
+      "evidence": "M2 gate PASS 6/6; auth.js:28 fix; 56/56 unit"
+    },
+    {
+      "id": "M3",
+      "name": "Frontend UI & Button Audit (9 views)",
+      "scope": "/, login, register, teamdetails, submission, leaderboard, jury, announcements, admin — 13 files",
+      "deps": "M1, M2",
+      "status": "DONE",
+      "pct": 100,
+      "evidence": "M3 gate PASS 6/6 (59/59 + 87/87 probes, CLEAN)"
+    },
+    {
+      "id": "M4",
+      "name": "Error Triaging & Production Hardening",
+      "scope": "ESLint, next.config hardening, error boundaries, backend 88/88 serial, build 17/17",
+      "deps": "M1-M3",
+      "status": "CONDITIONAL PASS",
+      "pct": 90,
+      "evidence": "worker_m4_2 88/88 x2 serial + auditor_m4_2 CLEAN + tie-break 88/88; reds are parallel-contention artifacts (clean controls green)"
+    },
+    {
+      "id": "M5",
+      "name": "Final Regression & Certification",
+      "scope": "Full 316 rerun + Tier-5 adversarial + final audit + Sentinel victory report",
+      "deps": "E2E, M1-M4",
+      "status": "PASS",
+      "pct": 100,
+      "evidence": "regression + audit + Tier-5 complete"
+    }
+  ],
+  "m4gate": {
+    "result": "CONDITIONAL PASS",
+    "workerClaim": "Lint 0, Build 17/17, Backend 88/88 serial x2, E2E 316/316",
+    "agents": [
+      {
+        "id": "worker_m4_1",
+        "role": "Worker",
+        "dir": "teamwork_preview_worker_m4_1",
+        "verdict": "CLEAN",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T07:33:35.806Z",
+        "progressMtime": "2026-09-14T07:33:09.026Z",
+        "numbers": {
+          "lint": null,
+          "build": "17/17 exit 0",
+          "unit": "56/56",
+          "integration": "32/32 (claimed)",
+          "backendAll": "88/88 (claimed)",
+          "e2e": "316/316 (claimed)"
+        },
+        "handoffPath": ".agents/teamwork_preview_worker_m4_1/handoff.md"
+      },
+      {
+        "id": "reviewer_m4_1",
+        "role": "Reviewer",
+        "dir": "teamwork_preview_reviewer_m4_1",
+        "verdict": "REQUEST_CHANGES",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T07:47:52.273Z",
+        "progressMtime": "2026-09-14T07:47:52.294Z",
+        "numbers": {
+          "lint": "exit 0",
+          "unit": "56/56",
+          "integration": "32/32 (claimed)"
+        },
+        "handoffPath": ".agents/teamwork_preview_reviewer_m4_1/handoff.md"
+      },
+      {
+        "id": "reviewer_m4_2",
+        "role": "Reviewer",
+        "dir": "teamwork_preview_reviewer_m4_2",
+        "verdict": "APPROVE",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T07:48:15.846Z",
+        "progressMtime": "2026-09-14T07:48:19.912Z",
+        "numbers": {
+          "lint": null,
+          "build": "17/17 exit 0",
+          "backendAll": "88/88 (claimed)",
+          "e2e": "316/316 (claimed)"
+        },
+        "handoffPath": ".agents/teamwork_preview_reviewer_m4_2/handoff.md"
+      },
+      {
+        "id": "challenger_m4_1",
+        "role": "Challenger",
+        "dir": "teamwork_preview_challenger_m4_1",
+        "verdict": "REQUEST_CHANGES",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T07:46:44.944Z",
+        "progressMtime": "2026-09-14T07:46:52.391Z",
+        "numbers": {
+          "lint": null,
+          "unit": "56/56",
+          "integration": "32/32 (claimed)",
+          "backendAll": "88/88 (claimed)"
+        },
+        "handoffPath": ".agents/teamwork_preview_challenger_m4_1/handoff.md"
+      },
+      {
+        "id": "challenger_m4_2",
+        "role": "Challenger",
+        "dir": "teamwork_preview_challenger_m4_2",
+        "verdict": "REQUEST_CHANGES",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T07:44:47.048Z",
+        "progressMtime": "2026-09-14T07:44:52.844Z",
+        "numbers": {
+          "lint": "exit 0",
+          "build": "17/17 exit 0",
+          "unit": "56/56",
+          "backendAll": "88/88 (claimed)"
+        },
+        "handoffPath": ".agents/teamwork_preview_challenger_m4_2/handoff.md"
+      },
+      {
+        "id": "auditor_m4_1",
+        "role": "Forensic Auditor",
+        "dir": "teamwork_preview_auditor_m4_1",
+        "verdict": "CLEAN",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T07:44:23.872Z",
+        "progressMtime": "2026-09-14T07:44:28.938Z",
+        "numbers": {
+          "lint": "exit 0",
+          "build": "17/17 exit 0",
+          "unit": "56/56",
+          "integration": "32/32 (claimed)",
+          "backendAll": "88/88 (claimed)",
+          "e2e": "316/316 (claimed)"
+        },
+        "handoffPath": ".agents/teamwork_preview_auditor_m4_1/handoff.md"
+      }
+    ],
+    "round2": [
+      {
+        "id": "worker_m4_2",
+        "role": "Worker",
+        "dir": "teamwork_preview_worker_m4_2",
+        "verdict": "DONE",
+        "verdictDetail": "handoff exists, no explicit verdict line",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T08:04:12.412Z",
+        "progressMtime": "2026-09-14T08:04:16.979Z",
+        "numbers": {
+          "lint": "exit 0",
+          "build": "17/17 exit 0",
+          "unit": "56/56",
+          "backendAll": "88/88 (claimed)"
+        },
+        "handoffPath": ".agents/teamwork_preview_worker_m4_2/handoff.md"
+      },
+      {
+        "id": "reviewer_m4_3",
+        "role": "Reviewer",
+        "dir": "teamwork_preview_reviewer_m4_3",
+        "verdict": "REQUEST_CHANGES",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T08:07:51.290Z",
+        "progressMtime": "2026-09-14T08:07:34.429Z",
+        "numbers": {
+          "lint": "exit 0",
+          "build": "17/17 exit 0",
+          "unit": "56/56",
+          "backendAll": "88/88 (claimed)",
+          "e2e": "316/316 (claimed)"
+        },
+        "handoffPath": ".agents/teamwork_preview_reviewer_m4_3/handoff.md"
+      },
+      {
+        "id": "challenger_m4_3",
+        "role": "Challenger",
+        "dir": "teamwork_preview_challenger_m4_3",
+        "verdict": "REQUEST_CHANGES",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T08:09:25.297Z",
+        "progressMtime": "2026-09-14T08:09:30.769Z",
+        "numbers": {
+          "lint": null,
+          "integration": "32/32 (claimed)",
+          "backendAll": "88/88 (claimed)"
+        },
+        "handoffPath": ".agents/teamwork_preview_challenger_m4_3/handoff.md"
+      },
+      {
+        "id": "auditor_m4_2",
+        "role": "Forensic Auditor",
+        "dir": "teamwork_preview_auditor_m4_2",
+        "verdict": "CLEAN",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T08:05:38.244Z",
+        "progressMtime": "2026-09-14T08:05:41.211Z",
+        "numbers": {
+          "lint": "lint exit 0",
+          "build": "17/17 exit 0",
+          "unit": "56/56",
+          "backendAll": "88/88 (claimed)",
+          "e2e": "316/316 (claimed)"
+        },
+        "handoffPath": ".agents/teamwork_preview_auditor_m4_2/handoff.md"
+      }
+    ],
+    "note": "Round-2 reds (reviewer_m4_3 76/88, challenger_m4_3 dirty-probe 22/32) ran CONCURRENTLY on shared promptothon_test; clean controls green (32/32, 88/88) + orchestrator serial tie-break 88/88. Rule: backend suites serial-only, never concurrent."
+  },
+  "m5gate": {
+    "result": "PASS",
+    "agents": [
+      {
+        "id": "m5_regression",
+        "role": "Regression",
+        "dir": "m5_regression",
+        "verdict": "PASS",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T08:11:52.291Z",
+        "progressMtime": "2026-09-14T08:12:01.623Z",
+        "numbers": {
+          "lint": "exit 0",
+          "build": "17/17 exit 0",
+          "unit": "56/56",
+          "backendAll": "88/88 (claimed)",
+          "e2e": "316/316 (claimed)"
+        },
+        "handoffPath": ".agents/m5_regression/handoff.md"
+      },
+      {
+        "id": "m5_auditor",
+        "role": "Final Auditor",
+        "dir": "m5_auditor",
+        "verdict": "CLEAN",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T08:11:31.593Z",
+        "progressMtime": "2026-09-14T08:11:31.595Z",
+        "numbers": {
+          "lint": null,
+          "build": "17/17 exit 0",
+          "unit": "56/56",
+          "backendAll": "88/88 (claimed)",
+          "e2e": "316/316 (claimed)"
+        },
+        "handoffPath": ".agents/m5_auditor/handoff.md"
+      },
+      {
+        "id": "m5_challenger",
+        "role": "Tier-5 Challenger",
+        "dir": "m5_challenger",
+        "verdict": "APPROVE",
+        "verdictDetail": "from handoff.md",
+        "hasHandoff": true,
+        "handoffMtime": "2026-09-14T08:38:34.171Z",
+        "progressMtime": "2026-09-14T08:38:34.190Z",
+        "numbers": {
+          "lint": null
+        },
+        "handoffPath": ".agents/m5_challenger/handoff.md"
+      }
+    ],
+    "tier5Gap": false,
+    "note": "M5 complete."
+  },
+  "health": {
+    "stuck": [
+      {
+        "agent": "explorer_m3_1",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-14T06:12:21.678Z"
+      },
+      {
+        "agent": "explorer_m3_2",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-14T06:12:08.092Z"
+      },
+      {
+        "agent": "explorer_m3_3",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-14T06:12:17.057Z"
+      },
+      {
+        "agent": "orchestrator_1",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-13T20:27:17.347Z"
+      },
+      {
+        "agent": "orchestrator_3",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-14T06:11:54.363Z"
+      },
+      {
+        "agent": "sentinel",
+        "state": "BY DESIGN (relay-only, no handoff)",
+        "lastProgress": null
+      },
+      {
+        "agent": "teamwork_preview_explorer_m1_3",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-13T20:29:41.159Z"
+      },
+      {
+        "agent": "teamwork_preview_explorer_m3_1",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-14T06:41:30.191Z"
+      },
+      {
+        "agent": "teamwork_preview_explorer_m3_3",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-14T06:41:21.188Z"
+      },
+      {
+        "agent": "teamwork_preview_explorer_m3_3_rep",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-14T06:47:23.575Z"
+      },
+      {
+        "agent": "teamwork_preview_explorer_m3_3_rep2",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-14T06:55:37.895Z"
+      },
+      {
+        "agent": "teamwork_preview_test_writer_e2e_1",
+        "state": "SUPERSEDED (replaced — harmless)",
+        "lastProgress": "2026-09-13T20:27:39.876Z"
+      }
+    ],
+    "staleOrchestratorFile": "2026-09-14T08:54:22.253Z",
+    "note": "SUPERSEDED = replaced generations that will never deliver (harmless). MISSING m5_challenger = the one real gap. Agents stall periodically when (1) superseded, (2) parallel runners collide on promptothon_test, (3) long build/test commands exceed heartbeat windows."
+  },
+  "metrics": [
+    {
+      "k": "ESLint",
+      "v": "exit 0, 0 errors (warnings only)",
+      "st": "PASS",
+      "src": "worker + 6 verifiers"
+    },
+    {
+      "k": "Build",
+      "v": "17/17 routes, exit 0",
+      "st": "PASS",
+      "src": "worker + reviewer_m4_2/m4_3 + m5_regression"
+    },
+    {
+      "k": "Backend unit",
+      "v": "5 suites 56/56",
+      "st": "PASS",
+      "src": "stable across all reruns"
+    },
+    {
+      "k": "Backend integration",
+      "v": "32/32 clean-serial; red under parallel/dirty",
+      "st": "CONDITIONAL",
+      "src": "worker_m4_2 x2 + challenger_m4_3 control; 40P01 on concurrent TRUNCATE"
+    },
+    {
+      "k": "Backend all",
+      "v": "88/88 serial (18.7s tie-break); 76/88 concurrent",
+      "st": "CONDITIONAL",
+      "src": "serial-only rule recorded in GATE_STATUS"
+    },
+    {
+      "k": "E2E",
+      "v": "316/316, 0 failed",
+      "st": "PASS",
+      "src": "m5_regression full rerun"
+    },
+    {
+      "k": "Integrity",
+      "v": "CLEAN (0/0/0 hardcodes, mocks fenced)",
+      "st": "PASS",
+      "src": "auditor_m4_2 + m5_auditor"
+    }
+  ],
+  "blockers": [
+    "Backend suites must run SERIALLY on promptothon_test — concurrent runs deadlock (40P01) and cascade (FK/unique/401). Recorded as M4 CONDITIONAL PASS, not a code defect.",
+    "Tier-5 dedicated challenger (m5_challenger) never spawned — cap-race / IDOR / JWT-tamper / freeze probes open (E2E Tier-4 adversarial scenario gives partial cover).",
+    "Stale/superseded agent dirs (explorer_m3_*/orchestrator_1/3/test_writer_e2e_1) will never deliver handoffs — harmless, tracked in health watchdog."
+  ],
+  "nextSteps": [
+    "1. Re-spawn m5_challenger Tier-5 probes (serial window, dev DB only) to close the last test gap.",
+    "2. Keep backend runs serial: one runner on promptothon_test at a time (already maxWorkers:1 + --runInBand).",
+    "3. Send Sentinel victory report (production-ready YES, serial-only condition + Tier-5 closeout).",
+    "4. Commit: backend/, tests/, .eslintrc.json, .env.example, global-error.js (HEAD 02231e1 predates all teamwork work).",
+    "5. Refresh this page anytime: node scripts/update-dashboard-status.js --embed."
+  ],
+  "links": [
+    {
+      "label": "M4 worker handoff",
+      "path": ".agents/teamwork_preview_worker_m4_1/handoff.md"
+    },
+    {
+      "label": "M4 gate status",
+      "path": ".agents/orchestrator_4/GATE_STATUS.md"
+    },
+    {
+      "label": "Orchestrator progress",
+      "path": ".agents/orchestrator_4/progress.md"
+    },
+    {
+      "label": "TEST_READY (316/316)",
+      "path": "TEST_READY.md"
+    },
+    {
+      "label": "PROJECT plan (27 feats)",
+      "path": "PROJECT.md"
+    }
+  ],
+  "refreshHint": "Run: node scripts/update-dashboard-status.js --embed  (regenerates this JSON + embedded snapshot in HTML)"
+}

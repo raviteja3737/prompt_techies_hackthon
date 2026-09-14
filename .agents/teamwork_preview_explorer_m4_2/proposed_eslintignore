@@ -1,0 +1,15 @@
+# Exclude backend files and dependencies from Next.js linting
+backend/
+backend/**
+tests/
+tests/**
+.agents/
+.agents/**
+node_modules/
+node_modules/**
+.next/
+.next/**
+out/
+dist/
+*.config.js
+*.config.mjs

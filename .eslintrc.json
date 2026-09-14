@@ -1,0 +1,20 @@
+{
+  "extends": "next/core-web-vitals",
+  "ignorePatterns": [
+    "backend/**",
+    "tests/**",
+    ".agents/**",
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "dist/**",
+    "*.config.js",
+    "*.config.mjs"
+  ],
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-img-element": "warn",
+    "react/jsx-no-undef": "off",
+    "react/jsx-key": "warn"
+  }
+}

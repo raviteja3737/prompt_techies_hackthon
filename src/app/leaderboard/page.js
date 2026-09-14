@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import { Award, Trophy, Sparkles, Filter, Lock, Radio, ArrowLeft, RefreshCw } from "lucide-react";
+import { Award, Trophy, Sparkles, Filter, Lock, Radio, ArrowLeft, RefreshCw, Search } from "lucide-react";
 import Link from "next/link";
 import api from "@/lib/api";
 import { getSocket } from "@/lib/socket";
@@ -10,6 +10,7 @@ export default function LeaderboardPage() {
 	const [leaderboardData, setLeaderboardData] = useState([]);
 	const [tracks, setTracks] = useState([]);
 	const [selectedTrackId, setSelectedTrackId] = useState("");
+	const [searchQuery, setSearchQuery] = useState("");
 	const [scoresFrozen, setScoresFrozen] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSocketConnected, setIsSocketConnected] = useState(false);
@@ -48,7 +49,12 @@ export default function LeaderboardPage() {
 
 		socket.on("leaderboard:update", (data) => {
 			if (data?.leaderboard) {
-				setLeaderboardData(data.leaderboard);
+				// Only overwrite directly if no track filter is active; otherwise refetch with active filter
+				if (!selectedTrackId) {
+					setLeaderboardData(data.leaderboard);
+				} else {
+					fetchLeaderboard();
+				}
 			}
 			if (typeof data?.scoresFrozen !== "undefined") {
 				setScoresFrozen(data.scoresFrozen);
@@ -64,9 +70,18 @@ export default function LeaderboardPage() {
 			socket.off("leaderboard:update");
 			socket.off("leaderboard:freeze-changed");
 		};
-	}, [fetchLeaderboard]);
+	}, [fetchLeaderboard, selectedTrackId]);
 
-	const top3 = leaderboardData.slice(0, 3);
+	const filteredData = leaderboardData.filter((team) => {
+		if (!searchQuery.trim()) return true;
+		const query = searchQuery.trim().toLowerCase();
+		return (
+			team.teamName?.toLowerCase().includes(query) ||
+			team.track?.title?.toLowerCase().includes(query)
+		);
+	});
+
+	const top3 = filteredData.slice(0, 3);
 
 	return (
 		<div className="min-h-screen bg-[#060a12] text-white px-4 py-12 relative overflow-hidden">
@@ -103,7 +118,21 @@ export default function LeaderboardPage() {
 						</div>
 					</div>
 
-					<div className="flex items-center gap-3">
+					{/* Filters & Search */}
+					<div className="flex flex-wrap items-center gap-3">
+						{/* Search Input */}
+						<div className="flex items-center gap-2 bg-[#0d1525]/80 border border-white/15 px-3 py-1.5 rounded-lg text-xs">
+							<Search className="w-3.5 h-3.5 text-slate-400" />
+							<input
+								type="text"
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+								placeholder="Search team name..."
+								className="bg-transparent text-white placeholder-slate-500 text-xs focus:outline-none w-32 sm:w-44"
+							/>
+						</div>
+
+						{/* Track Filter */}
 						<div className="flex items-center gap-2 bg-[#0d1525]/80 border border-white/15 px-3 py-1.5 rounded-lg text-xs">
 							<Filter className="w-3.5 h-3.5 text-[#00c8ff]" />
 							<select
@@ -120,6 +149,7 @@ export default function LeaderboardPage() {
 							</select>
 						</div>
 
+						{/* Refresh Button */}
 						<button
 							onClick={fetchLeaderboard}
 							className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-colors"
@@ -172,9 +202,9 @@ export default function LeaderboardPage() {
 									</div>
 
 									<div className="w-full pt-2 border-t border-white/10 flex items-center justify-between text-xs">
-										<span className="text-slate-400">Score</span>
+										<span className="text-slate-400">Average Score</span>
 										<span className="font-mono font-bold text-white text-sm">
-											{scoresFrozen ? "Locked 🔒" : (team.totalScore?.toFixed(1) || "0.0")}
+											{scoresFrozen ? "Locked 🔒" : (team.averageScore?.toFixed(1) || "0.0")}
 										</span>
 									</div>
 								</div>
@@ -185,16 +215,20 @@ export default function LeaderboardPage() {
 
 				{/* Full Rankings Table */}
 				<div className="p-6 bg-[#0d1525]/85 backdrop-blur-xl border border-white/10 rounded-2xl shadow-lg space-y-4">
-					<h2 className="text-sm font-bold uppercase tracking-wider text-slate-400">All Teams Ranking</h2>
+					<div className="flex items-center justify-between">
+						<h2 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+							All Teams Ranking ({filteredData.length})
+						</h2>
+					</div>
 
 					{isLoading ? (
 						<div className="py-12 flex flex-col items-center justify-center text-slate-400 space-y-2">
 							<RefreshCw className="w-6 h-6 animate-spin text-[#00c8ff]" />
 							<p className="text-xs">Computing live standings...</p>
 						</div>
-					) : leaderboardData.length === 0 ? (
+					) : filteredData.length === 0 ? (
 						<div className="py-12 text-center text-slate-400 text-xs">
-							No evaluated submissions yet. Check back soon!
+							{searchQuery ? "No teams matched your search." : "No evaluated submissions yet. Check back soon!"}
 						</div>
 					) : (
 						<div className="overflow-x-auto">
@@ -204,24 +238,42 @@ export default function LeaderboardPage() {
 										<th className="py-3 px-4">Rank</th>
 										<th className="py-3 px-4">Team</th>
 										<th className="py-3 px-4">Track</th>
+										<th className="py-3 px-4 text-center">Status</th>
 										<th className="py-3 px-4 text-center">Reviews</th>
 										<th className="py-3 px-4 text-right">Average Score</th>
 									</tr>
 								</thead>
 								<tbody className="divide-y divide-white/5 font-medium">
-									{leaderboardData.map((team, index) => (
-										<tr key={team.teamId || index} className="hover:bg-white/[0.02] transition-colors">
-											<td className="py-3 px-4 font-mono font-bold text-white">#{index + 1}</td>
-											<td className="py-3 px-4 text-white font-semibold">{team.teamName}</td>
-											<td className="py-3 px-4 text-slate-400">{team.track?.title || "General"}</td>
-											<td className="py-3 px-4 text-center font-mono text-slate-400">
-												{team.evaluationsCount || 0}
-											</td>
-											<td className="py-3 px-4 text-right font-mono font-bold text-[#00c8ff]">
-												{scoresFrozen ? "Locked 🔒" : (team.totalScore?.toFixed(1) || "0.0")}
-											</td>
-										</tr>
-									))}
+									{filteredData.map((team, index) => {
+										const reviewCount = team.juryCount ?? team.evaluationsCount ?? 0;
+										const isEvaluated = reviewCount > 0;
+										const rankDisplay = isEvaluated && team.rank ? `#${team.rank}` : "—";
+
+										return (
+											<tr key={team.teamId || index} className="hover:bg-white/[0.02] transition-colors">
+												<td className="py-3 px-4 font-mono font-bold text-white">{rankDisplay}</td>
+												<td className="py-3 px-4 text-white font-semibold">{team.teamName}</td>
+												<td className="py-3 px-4 text-slate-400">{team.track?.title || "General"}</td>
+												<td className="py-3 px-4 text-center">
+													<span
+														className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+															isEvaluated
+																? "bg-green-500/10 text-green-400 border-green-500/30"
+																: "bg-slate-500/10 text-slate-400 border-slate-500/30"
+														}`}
+													>
+														{isEvaluated ? "Evaluated" : "Pending Review"}
+													</span>
+												</td>
+												<td className="py-3 px-4 text-center font-mono text-slate-400">
+													{reviewCount}
+												</td>
+												<td className="py-3 px-4 text-right font-mono font-bold text-[#00c8ff]">
+													{scoresFrozen ? "Locked 🔒" : (team.averageScore?.toFixed(1) || "0.0")}
+												</td>
+											</tr>
+										);
+									})}
 								</tbody>
 							</table>
 						</div>

@@ -120,26 +120,27 @@ export default function Footer() {
 					</div>
 					<div className="w-full flex flex-col justify-start items-start gap-4 lg:flex-row lg:justify-between">
 						<Link
-							href="#about"
+							href="/#about"
 							className="text-inverse-on-surface/60 border-b-2 border-inverse-on-surface/30 transition-all duration-200 ease-out text-base hover:text-inverse-on-surface"
 						>
 							About ↗
 						</Link>
 						<Link
-							href="#programs"
+							href="/#tracks"
 							className="text-inverse-on-surface/60 border-b-2 border-inverse-on-surface/30 transition-all duration-200 ease-out text-base hover:text-inverse-on-surface"
 						>
-							Programs ↗
+							Tracks ↗
 						</Link>
 						<Link
 							href="https://prompttechies.in"
 							target="_blank"
+							rel="noopener noreferrer"
 							className="text-inverse-on-surface/60 border-b-2 border-inverse-on-surface/30 transition-all duration-200 ease-out text-base hover:text-inverse-on-surface"
 						>
 							Campus Chapters ↗
 						</Link>
 						<Link
-							href="#contact"
+							href="/#contact"
 							className="text-inverse-on-surface/60 border-b-2 border-inverse-on-surface/30 transition-all duration-200 ease-out text-base hover:text-inverse-on-surface"
 						>
 							Contact Us ↗

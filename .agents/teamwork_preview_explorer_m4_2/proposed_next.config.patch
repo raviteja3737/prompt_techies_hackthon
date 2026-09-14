@@ -1,0 +1,10 @@
+--- a/next.config.mjs
++++ b/next.config.mjs
+@@ -2,6 +2,9 @@
+ const nextConfig = {
++    eslint: {
++      dirs: ['src'],
++    },
+     images: {
+       domains: ['firebasestorage.googleapis.com'],
+     },
