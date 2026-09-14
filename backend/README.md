@@ -11,14 +11,25 @@ Postman collection: **[postman/promptothon.postman_collection.json](postman/prom
 
 ## Setup
 
+Unified env template lives at the repo root (`../.env.example`).
+The API reads root `.env` first; `backend/.env` is an optional legacy
+override (wins if present), and `backend/.env.test` isolates Jest.
+
 ```bash
 npm install
-cp ../.env.example .env   # unified template at repo root, then fill in real secrets
-# (frontend uses root .env instead — see ../.env.example header)
+cp ../.env.example ../.env   # run from backend/, or `cp .env.example .env` from repo root — then fill in real secrets
 npx prisma generate
 npx prisma migrate dev --name init
 npm run seed            # creates the ADMIN user + a full dev dataset
 npm run dev
+```
+
+Docker (full stack from repo root):
+
+```bash
+docker compose up --build
+docker compose exec api npx prisma migrate deploy  # first boot only
+docker compose exec api npm run seed                # first boot only
 ```
 
 Server boots on `PORT` (default 4000) with Socket.IO attached to the
@@ -150,9 +161,9 @@ computed in memory at leaderboard build time only.
 ## Testing
 
 ```bash
-cp .env.example .env.test   # point DATABASE_URL at a throwaway test DB
+cp ../.env.example .env.test  # point DATABASE_URL at a throwaway test DB (NODE_ENV=test, PORT=4001)
 npx dotenv -e .env.test -- npx prisma migrate deploy
-npm test
+npm test                      # unit; `npm run test:integration` / `npm run test:all` for the full suites
 ```
 
 See `tests/` and `docs/API.md` → Testing for details. The suite covers
@@ -174,10 +185,13 @@ aggregation/ranking/ties/freeze behavior, and admin authorization.
   score-freeze flag all live in the existing generic `SystemSetting` table,
   accessed through the typed helpers in `src/utils/settings.js` — no new
   migration needed to add another admin toggle later.
-- **File uploads**: `src/utils/storage.js` implements the presigned-URL
-  interface and a real S3 driver, but lazily `require()`s the AWS SDK so
-  the server boots and every other route works with zero new dependencies
-  until `STORAGE_PROVIDER=s3` is actually set. See `.env.example`.
+- **File uploads**: `src/utils/storage.js` fronts the presigned-URL
+  interface with `local` (default — PDFs on server disk under
+  `LOCAL_STORAGE_DIR`, persistent `pitchdeck_data` volume in compose)
+  and `disabled` (endpoints return 501) providers, plus a real S3 driver
+  and Supabase driver (`src/services/storage/`). The AWS SDK is lazily
+  `require()`d so the server boots with zero new dependencies until
+  `STORAGE_PROVIDER=s3` is actually set. See root `.env.example`.
 - **Rate limiting** is in-memory (`express-rate-limit`), fine for a single
   instance; `src/middleware/rateLimiter.js` documents how to swap in a
   Redis-backed store if this scales horizontally. `ioredis` is already a

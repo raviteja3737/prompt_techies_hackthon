@@ -5,9 +5,13 @@ const ApiError = require("./ApiError");
  * Storage abstraction for the pitch-deck upload flow (spec §4/§27).
  *
  * STORAGE_PROVIDER selects the backing driver:
- *   - "supabase" (recommended) -> src/services/storage/supabaseStorage.js
- *   - "s3"        (kept for environments not on Supabase yet)
- *   - "disabled"  (default) -> upload endpoints return a clear 501 instead
+ *   - "local"    (default) -> src/services/storage/localStorage.js
+ *                  PDFs are stored on this server's own disk
+ *                  (LOCAL_STORAGE_DIR; a persistent Docker volume on
+ *                  the VPS) and streamed back by the API.
+ *   - "supabase" (external) -> src/services/storage/supabaseStorage.js
+ *   - "s3"       (external) -> presigned S3 PUT URLs (needs AWS SDK)
+ *   - "disabled" (default) -> upload endpoints return a clear 501 instead
  *                  of crashing on boot when no provider is configured.
  *
  * Callers (submissions.controller.js) never see which driver is active --
@@ -48,6 +52,14 @@ async function getPresignedUploadUrl({ teamId, contentType, sizeBytes }) {
     );
   }
 
+  if (provider === "local") {
+    // VPS-disk driver: the client PUTs the file straight back to this
+    // API (PUT /api/team/submission/upload/:key), which persists it
+    // under LOCAL_STORAGE_DIR. The UI flow is unchanged.
+    const localStorage = require("../services/storage/localStorage");
+    return localStorage.createUpload({ teamId, contentType, sizeBytes });
+  }
+
   if (provider === "supabase") {
     const supabaseStorage = require("../services/storage/supabaseStorage");
     return supabaseStorage.getPresignedUploadUrl({ teamId, contentType, sizeBytes });
@@ -78,6 +90,10 @@ async function getSignedDownloadUrl(key) {
 function getStorageStatus() {
   const provider = process.env.STORAGE_PROVIDER || "disabled";
   if (provider === "disabled") return { provider, configured: false };
+  if (provider === "local") {
+    const localStorage = require("../services/storage/localStorage");
+    return localStorage.getLocalStatus();
+  }
   if (provider === "supabase") {
     return {
       provider,
@@ -124,4 +140,9 @@ async function getS3PresignedUploadUrl({ teamId, contentType }) {
   };
 }
 
-module.exports = { getPresignedUploadUrl, getSignedDownloadUrl, getStorageStatus, ALLOWED_CONTENT_TYPES };
+/** Active provider id ("local" | "supabase" | "s3" | "disabled"). */
+function getStorageProvider() {
+  return process.env.STORAGE_PROVIDER || "disabled";
+}
+
+module.exports = { getPresignedUploadUrl, getSignedDownloadUrl, getStorageStatus, getStorageProvider, ALLOWED_CONTENT_TYPES };

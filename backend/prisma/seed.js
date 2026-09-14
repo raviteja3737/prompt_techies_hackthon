@@ -1,4 +1,9 @@
-require("dotenv").config();
+// Single-file deploy: root `.env` is the source of truth (see server.js).
+const path = require("path");
+const dotenv = require("dotenv");
+dotenv.config({ path: path.join(__dirname, "..", ".env") });
+dotenv.config({ path: path.join(__dirname, "..", "..", ".env") });
+dotenv.config();
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const prisma = require("../src/config/prisma");

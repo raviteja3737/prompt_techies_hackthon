@@ -40,6 +40,9 @@ backend/.env.test
 .env.production.local
 !.env.example
 
+# local pitch-deck uploads (STORAGE_PROVIDER=local dev default)
+backend/storage/
+
 # vercel
 .vercel
 

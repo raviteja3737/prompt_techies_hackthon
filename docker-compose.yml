@@ -7,9 +7,10 @@
 # One-off DB setup (first boot only):
 #   docker compose exec api npx prisma migrate deploy
 #   docker compose exec api npm run seed
-# Prod: fill real secrets in .env / backend/.env (see .env.example header),
-# then `docker compose up --build -d`. Changing any NEXT_PUBLIC_* var
-# needs `docker compose build web` (Next.js bakes them in at build time).
+# Prod (VPS): single file — `cp .env.example .env`, fill secrets in `.env`
+# (see .env.example header), then `docker compose up --build -d`.
+# Changing any NEXT_PUBLIC_* var needs `docker compose build web`
+# (Next.js bakes them in at build time).
 
 services:
   # --- Database: official image, NO custom Dockerfile needed ------------
@@ -40,11 +41,24 @@ services:
     container_name: promptothon-api
     restart: unless-stopped
     env_file:
-      - ./backend/.env # runtime secrets; never baked into the image
+      # Single-file deploy: root .env is the source of truth.
+      # backend/.env is an optional legacy override (wins if present).
+      - path: ./.env
+        required: true
+      - path: ./backend/.env
+        required: false # runtime secrets; never baked into the image
     environment:
       # Inside the compose network the DB host is `db`, not localhost
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-password123}@db:5432/${POSTGRES_DB:-promptothon}
       DIRECT_URL: postgresql://postgres:${POSTGRES_PASSWORD:-password123}@db:5432/${POSTGRES_DB:-promptothon}
+      # Pitch decks are stored on this named volume (VPS disk) — files
+      # survive container rebuilds/restarts. Must match LOCAL_STORAGE_DIR.
+      LOCAL_STORAGE_DIR: /data/pitch-decks
+      # Public base URL of the API, used to build browser-facing
+      # upload/download links. Must be reachable from user browsers.
+      API_PUBLIC_URL: ${API_PUBLIC_URL:-http://localhost:4000}
+    volumes:
+      - pitchdeck_data:/data/pitch-decks
     ports:
       - "4000:4000"
     depends_on:
@@ -59,6 +73,9 @@ services:
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
         NEXT_PUBLIC_SOCKET_URL: ${NEXT_PUBLIC_SOCKET_URL:-http://localhost:4000}
+        # NEXT_PUBLIC_* vars are baked into the image at build time —
+        # the Ask PT chatbot needs this set BEFORE `docker compose build web`.
+        NEXT_PUBLIC_GROQ_API_KEY: ${NEXT_PUBLIC_GROQ_API_KEY:-}
     container_name: promptothon-web
     restart: unless-stopped
     env_file:
@@ -74,3 +91,7 @@ volumes:
     # Pinned name so the volume survives compose project renames and keeps
     # the data created earlier by backend/docker-compose.yml.
     name: backend_pgdata
+  pitchdeck_data:
+    # VPS-disk home for pitch-deck PDFs (STORAGE_PROVIDER=local).
+    # Named (not a bind mount) so files survive `up --build` recreates.
+    name: backend_pitchdeck_data
