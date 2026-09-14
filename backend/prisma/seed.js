@@ -1,9 +1,11 @@
-// Single-file deploy: root `.env` is the source of truth (see server.js).
+// Single-file deploy: root `.env` is the ONLY env file (see server.js).
 const path = require("path");
 const dotenv = require("dotenv");
-dotenv.config({ path: path.join(__dirname, "..", ".env") });
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env") });
 dotenv.config();
+if (process.env.NODE_ENV !== "test" && !process.env.JEST_WORKER_ID) {
+  require("../src/utils/validateEnv").validateEnv();
+}
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const prisma = require("../src/config/prisma");

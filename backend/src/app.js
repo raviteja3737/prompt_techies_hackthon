@@ -29,9 +29,9 @@ app.use(helmet());
 app.use(
   cors({
     // Never fall back to "*" here: credentials: true + a wildcard origin
-    // is rejected by browsers anyway, but an explicit default avoids
-    // relying on that and keeps local dev working out of the box.
-    origin: process.env.CLIENT_ORIGIN || "http://localhost:3000",
+    // is rejected by browsers anyway. Production must set CLIENT_ORIGIN
+    // explicitly (validateEnv enforces this); localhost is dev-only.
+    origin: process.env.CLIENT_ORIGIN || (process.env.NODE_ENV === "production" ? undefined : "http://localhost:3000"),
     credentials: true,
   })
 );

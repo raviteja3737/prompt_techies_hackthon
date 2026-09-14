@@ -1,12 +1,13 @@
-// Single-file deploy: root `.env` is the source of truth.
-// Load legacy `backend/.env` first (wins if present, matches compose
-// env_file order), then root `.env` fallback, then CWD default.
+// Single-file deploy: root `.env` is the ONLY env file.
+// (backend/.env is NOT read — root .env holds Next.js + API + Postgres.)
 // Compose-injected env vars always win (dotenv never overrides them).
 const path = require("path");
 const dotenv = require("dotenv");
-dotenv.config({ path: path.join(__dirname, "..", ".env") });
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env") });
 dotenv.config();
+
+// Fail fast on missing/weak production secrets (no-op outside production).
+require("./utils/validateEnv").validateEnv();
 
 const http = require("http");
 const app = require("./app");

@@ -237,7 +237,7 @@ optional `STORAGE_PROVIDER`/`AWS_*` block for pitch-deck uploads.
 
 ```bash
 npm install
-cp ../.env.example .env       # unified template at repo root; fill in real secrets, at minimum DATABASE_URL, JWT_SECRET, JURY_ALIAS_SALT, ADMIN_EMAIL/ADMIN_PASSWORD
+cp ../.env.example ../.env    # unified template at repo root (the ONLY env file); fill in real secrets, at minimum DATABASE_URL, JWT_SECRET, JURY_ALIAS_SALT, ADMIN_EMAIL/ADMIN_PASSWORD
 npx prisma generate
 npx prisma migrate dev --name init
 npm run seed                # bootstraps the admin + a full dev dataset (see prisma/seed.js)

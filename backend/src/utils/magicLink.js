@@ -10,7 +10,10 @@ function generateRawToken() {
 
 /** One-way hash actually persisted in MagicLinkToken.tokenHash. */
 function hashToken(rawToken) {
-  const salt = process.env.JWT_SECRET || "dev-magic-link-salt";
+  const salt = process.env.JWT_SECRET;
+  if (!salt) {
+    throw new Error("[env] JWT_SECRET is missing. Copy .env.example to .env and set a fresh value (openssl rand -hex 32).");
+  }
   return crypto.createHmac("sha256", salt).update(rawToken).digest("hex");
 }
 

@@ -10,7 +10,8 @@ function initSockets(httpServer) {
   io = new Server(httpServer, {
     cors: {
       // Same rule as app.js: never "*" alongside credentials.
-      origin: process.env.CLIENT_ORIGIN || "http://localhost:3000",
+      // Production must set CLIENT_ORIGIN explicitly (validateEnv enforces this).
+      origin: process.env.CLIENT_ORIGIN || (process.env.NODE_ENV === "production" ? undefined : "http://localhost:3000"),
       credentials: true,
     },
   });

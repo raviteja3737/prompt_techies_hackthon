@@ -49,7 +49,13 @@ function getStorageDir() {
 
 /** Public base URL of this API, used to build browser-facing upload/download links. */
 function apiPublicUrl() {
-  const raw = process.env.API_PUBLIC_URL || "http://localhost:4000";
+  // Production must set API_PUBLIC_URL explicitly (validateEnv enforces
+  // this); localhost is dev-only.
+  const raw =
+    process.env.API_PUBLIC_URL || (process.env.NODE_ENV === "production" ? undefined : "http://localhost:4000");
+  if (!raw) {
+    throw new ApiError(500, "API_PUBLIC_URL is not configured. Set it to the public https:// URL in root .env.");
+  }
   return raw.replace(/\/+$/, "");
 }
 

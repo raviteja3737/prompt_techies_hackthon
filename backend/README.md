@@ -12,8 +12,8 @@ Postman collection: **[postman/promptothon.postman_collection.json](postman/prom
 ## Setup
 
 Unified env template lives at the repo root (`../.env.example`).
-The API reads root `.env` first; `backend/.env` is an optional legacy
-override (wins if present), and `backend/.env.test` isolates Jest.
+The API reads ONLY the root `.env` (single-file deploy);
+`backend/.env.test` isolates Jest. Do not create `backend/.env`.
 
 ```bash
 npm install

@@ -38,7 +38,7 @@ Data flow: Next.js UI → Axios → Express routes → Controller/Service → Pr
 cp .env.example .env   # fill JWT_SECRET, JURY_ALIAS_SALT, POSTGRES_PASSWORD, ADMIN_PASSWORD
 ```
 
-Frontend reads root `.env` (`NEXT_PUBLIC_*`). Backend reads root `.env` (`backend/.env` is an optional legacy override). See `.env.example` header for the full prod checklist and test overrides.
+Frontend reads root `.env` (`NEXT_PUBLIC_*`). Backend reads ONLY root `.env` (`backend/.env` is not read — do not create it). See `.env.example` header for the full prod checklist and test overrides.
 
 ### 2a. Full stack with Docker (recommended)
 

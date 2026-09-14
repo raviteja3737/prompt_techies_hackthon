@@ -9,6 +9,8 @@
 #   docker compose exec api npm run seed
 # Prod (VPS): single file — `cp .env.example .env`, fill secrets in `.env`
 # (see .env.example header), then `docker compose up --build -d`.
+# `db` is the only pulled image (postgres:16-alpine); `api` + `web` are
+# built locally, so `docker pull` alone is NOT enough.
 # Changing any NEXT_PUBLIC_* var needs `docker compose build web`
 # (Next.js bakes them in at build time).
 
@@ -23,10 +25,12 @@ services:
         required: false # POSTGRES_* optional here; defaults below apply
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password123}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in root .env}
       POSTGRES_DB: ${POSTGRES_DB:-promptothon}
-    ports:
-      - "5432:5432"
+    # No `ports:` — Postgres is reachable only inside the compose network
+    # (api -> db:5432). Publishing 5432 would expose the database publicly.
+    expose:
+      - "5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -41,22 +45,22 @@ services:
     container_name: promptothon-api
     restart: unless-stopped
     env_file:
-      # Single-file deploy: root .env is the source of truth.
-      # backend/.env is an optional legacy override (wins if present).
+      # Single-file deploy: root .env is the ONLY env file (backend/.env
+      # is NOT read — do not recreate it).
       - path: ./.env
         required: true
-      - path: ./backend/.env
-        required: false # runtime secrets; never baked into the image
     environment:
-      # Inside the compose network the DB host is `db`, not localhost
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-password123}@db:5432/${POSTGRES_DB:-promptothon}
-      DIRECT_URL: postgresql://postgres:${POSTGRES_PASSWORD:-password123}@db:5432/${POSTGRES_DB:-promptothon}
+      # Inside the compose network the DB host is `db`, not localhost.
+      # POSTGRES_USER/DB honor the root .env values (no hardcoded user).
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in root .env}@db:5432/${POSTGRES_DB:-promptothon}
+      DIRECT_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in root .env}@db:5432/${POSTGRES_DB:-promptothon}
       # Pitch decks are stored on this named volume (VPS disk) — files
       # survive container rebuilds/restarts. Must match LOCAL_STORAGE_DIR.
       LOCAL_STORAGE_DIR: /data/pitch-decks
       # Public base URL of the API, used to build browser-facing
       # upload/download links. Must be reachable from user browsers.
-      API_PUBLIC_URL: ${API_PUBLIC_URL:-http://localhost:4000}
+      # No localhost fallback — must be set explicitly in root .env.
+      API_PUBLIC_URL: ${API_PUBLIC_URL:?API_PUBLIC_URL must be set in root .env}
     volumes:
       - pitchdeck_data:/data/pitch-decks
     ports:
@@ -70,12 +74,30 @@ services:
     build:
       context: .
       args:
+        # Every NEXT_PUBLIC_* var is baked into the client bundle at build
+        # time — set them in root .env BEFORE `docker compose build web`.
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
         NEXT_PUBLIC_SOCKET_URL: ${NEXT_PUBLIC_SOCKET_URL:-http://localhost:4000}
-        # NEXT_PUBLIC_* vars are baked into the image at build time —
-        # the Ask PT chatbot needs this set BEFORE `docker compose build web`.
+        # Ask PT chatbot key — intentionally client-side for this
+        # hackathon/free-tier setup (visible in the bundle by design).
         NEXT_PUBLIC_GROQ_API_KEY: ${NEXT_PUBLIC_GROQ_API_KEY:-}
+        NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${NEXT_PUBLIC_GOOGLE_ANALYTICS_ID:-}
+        NEXT_PUBLIC_FACEBOOK_URL: ${NEXT_PUBLIC_FACEBOOK_URL:-https://www.facebook.com/cbitosc/}
+        NEXT_PUBLIC_TWITTER_URL: ${NEXT_PUBLIC_TWITTER_URL:-https://twitter.com/cbitosc/}
+        NEXT_PUBLIC_INSTAGRAM_URL: ${NEXT_PUBLIC_INSTAGRAM_URL:-https://www.instagram.com/cbitosc/}
+        NEXT_PUBLIC_LINKEDIN_URL: ${NEXT_PUBLIC_LINKEDIN_URL:-https://www.linkedin.com/company/cbitosc/}
+        NEXT_PUBLIC_HACKATHON_LINKEDIN_URL: ${NEXT_PUBLIC_HACKATHON_LINKEDIN_URL:-https://linkedin.com/company/cbit-hackathon}
+        NEXT_PUBLIC_GITHUB_URL: ${NEXT_PUBLIC_GITHUB_URL:-https://github.com/cbitosc}
+        NEXT_PUBLIC_SUBSTACK_URL: ${NEXT_PUBLIC_SUBSTACK_URL:-https://cbitosc.substack.com/}
+        NEXT_PUBLIC_COMMUNITY_URL: ${NEXT_PUBLIC_COMMUNITY_URL:-https://cbitosc.github.io/}
+        NEXT_PUBLIC_CODE_OF_CONDUCT_URL: ${NEXT_PUBLIC_CODE_OF_CONDUCT_URL:-https://cbitosc.github.io/coc/}
+        NEXT_PUBLIC_HACKTOBERFEST_URL: ${NEXT_PUBLIC_HACKTOBERFEST_URL:-https://hacktoberfest.com}
+        NEXT_PUBLIC_SPONSOR_TITLE_URL: ${NEXT_PUBLIC_SPONSOR_TITLE_URL:-https://google.com}
+        NEXT_PUBLIC_SPONSOR_CO_URL: ${NEXT_PUBLIC_SPONSOR_CO_URL:-https://google.com}
+        NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL:-cosc@cbit.ac.in}
+        NEXT_PUBLIC_CONTACT_PHONE_MEGHANA: ${NEXT_PUBLIC_CONTACT_PHONE_MEGHANA:-+916281657674}
+        NEXT_PUBLIC_CONTACT_PHONE_SRILEKHA: ${NEXT_PUBLIC_CONTACT_PHONE_SRILEKHA:-+917416939873}
     container_name: promptothon-web
     restart: unless-stopped
     env_file:

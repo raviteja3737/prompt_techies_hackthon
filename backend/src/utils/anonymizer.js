@@ -13,7 +13,10 @@ const crypto = require("crypto");
  * to infer submission timing or judge identity either.
  */
 function aliasForEvaluations(teamId, evaluations) {
-  const salt = process.env.JURY_ALIAS_SALT || "dev-salt-change-me";
+  const salt = process.env.JURY_ALIAS_SALT;
+  if (!salt) {
+    throw new Error("[env] JURY_ALIAS_SALT is missing. Copy .env.example to .env and set a fresh value (openssl rand -hex 32).");
+  }
 
   const ranked = [...evaluations]
     .map((evaluation) => {
