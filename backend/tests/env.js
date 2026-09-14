@@ -3,8 +3,8 @@ const path = require("path");
 const dotenv = require("dotenv");
 
 // Prefer a dedicated test database so `npm test` never touches dev/seed
-// data. Copy .env.example -> .env.test and point DATABASE_URL at a
-// throwaway database before running the suite.
+// data. Copy the unified ../../.env.example (Sections 2+4) -> .env.test
+// and point DATABASE_URL at a throwaway database before running the suite.
 const testEnvPath = path.resolve(__dirname, "..", ".env.test");
 dotenv.config({ path: fs.existsSync(testEnvPath) ? testEnvPath : path.resolve(__dirname, "..", ".env") });
 

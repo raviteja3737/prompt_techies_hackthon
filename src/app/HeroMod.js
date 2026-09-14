@@ -13,14 +13,14 @@ export default function HeroMod() {
 	return (
 		<div
 			style={{ backgroundColor: "#0a0a0a" }}
-			className="h-[90vh] md:h-[100vh] relative w-full overflow-hidden bg-slate-900 flex flex-col items-center justify-center"
+			className="min-h-[90svh] md:min-h-[100vh] relative w-full overflow-hidden bg-slate-900 flex flex-col items-center justify-center py-16"
 		>
 			<div
 				style={{ backgroundColor: "#0a0a0a" }}
 				className="absolute inset-0 w-full h-full z-20 [mask-image:radial-gradient(transparent,white)] pointer-events-none"
 			/>
 			<Boxes />
-			<div className="relative z-20 flex flex-col items-center pointer-events-none px-4">
+			<div className="relative z-20 flex flex-col items-center pointer-events-none px-4 w-full max-w-full">
 				{/* Transparent Logo */}
 				<div className="flex flex-row items-center justify-center mb-2">
 					<Image
@@ -34,7 +34,7 @@ export default function HeroMod() {
 				</div>
 
 				{/* Promptathon Title */}
-				<h1 className="font-orbitron md:text-6xl text-4xl text-center text-white my-6 font-bold tracking-wider drop-shadow-[0_0_25px_rgba(0,200,255,0.3)]">
+				<h1 className="font-orbitron text-[28px] leading-tight sm:text-4xl md:text-6xl text-center text-white my-6 font-bold tracking-wider drop-shadow-[0_0_25px_rgba(0,200,255,0.3)] max-w-full break-words px-2">
 					<TypingEffect2
 						text="Promptathon 2026"
 						speed={70}
@@ -42,22 +42,22 @@ export default function HeroMod() {
 				</h1>
 
 				{/* Single Tagline — exactly matching the reference */}
-				<p className="text-center mt-2 text-secondary text-lg md:text-xl font-medium tracking-wide">
+				<p className="text-center mt-2 text-secondary text-base sm:text-lg md:text-xl font-medium tracking-wide max-w-full px-2 text-balance">
 					<span className="text-secondary font-bold mr-1.5">&gt;</span> The{" "}
 					<span className="text-white font-semibold">Biggest</span> AI Hackathon by{" "}
 					<span className="text-white font-semibold">Prompt Techies!</span>
 				</p>
 
 				{/* Action Buttons */}
-				<div className="flex flex-wrap items-center justify-center gap-4 mt-8 pointer-events-auto">
+				<div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-8 pointer-events-auto px-2 w-full max-w-full">
 					{user ? (
 						<Link
 							href="/teamdetails"
 							className={cn(
 								"bg-[#0a0a0a]/80 text-center border-secondary border-2 md:h-[7vh] text-secondary",
-								"px-8 py-2 rounded-full hover:bg-secondary hover:text-[#0a0a0a]",
+								"px-6 sm:px-8 py-2 min-h-[44px] max-w-full rounded-full hover:bg-secondary hover:text-[#0a0a0a]",
 								"transition-all duration-300 shadow-primary-glow hover:shadow-primary-glow-hover",
-								"flex flex-col justify-center items-center font-semibold text-lg"
+								"flex flex-col justify-center items-center font-semibold text-base sm:text-lg"
 							)}
 						>
 							<span>Team Details</span>
@@ -68,9 +68,9 @@ export default function HeroMod() {
 								href="/register"
 								className={cn(
 									"bg-secondary text-[#0a0a0a] text-center border-secondary border-2 md:h-[7vh]",
-									"px-8 py-2 rounded-full hover:bg-transparent hover:text-secondary",
+									"px-6 sm:px-8 py-2 min-h-[44px] max-w-full rounded-full hover:bg-transparent hover:text-secondary",
 									"transition-all duration-300 shadow-primary-glow hover:shadow-primary-glow-hover",
-									"flex flex-col justify-center items-center font-semibold text-lg"
+									"flex flex-col justify-center items-center font-semibold text-base sm:text-lg"
 								)}
 							>
 								<span>Register Now</span>
@@ -79,9 +79,9 @@ export default function HeroMod() {
 								href="/#about"
 								className={cn(
 									"bg-[#0a0a0a]/80 text-center border-white/20 border-2 md:h-[7vh] text-white",
-									"px-8 py-2 rounded-full hover:border-[#00c8ff] hover:text-[#00c8ff]",
+									"px-6 sm:px-8 py-2 min-h-[44px] max-w-full rounded-full hover:border-[#00c8ff] hover:text-[#00c8ff]",
 									"transition-all duration-300",
-									"flex flex-col justify-center items-center font-semibold text-lg"
+									"flex flex-col justify-center items-center font-semibold text-base sm:text-lg"
 								)}
 							>
 								<span>Learn More</span>
@@ -90,9 +90,9 @@ export default function HeroMod() {
 								href="/networking"
 								className={cn(
 									"bg-[#0a0a0a]/80 text-center border-white/20 border-2 md:h-[7vh] text-slate-300",
-									"px-8 py-2 rounded-full hover:border-secondary hover:text-secondary",
+									"px-6 sm:px-8 py-2 min-h-[44px] max-w-full rounded-full hover:border-secondary hover:text-secondary",
 									"transition-all duration-300",
-									"flex flex-col justify-center items-center font-semibold text-lg"
+									"flex flex-col justify-center items-center font-semibold text-base sm:text-lg"
 								)}
 							>
 								<span>Join Community</span>

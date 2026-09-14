@@ -39,7 +39,7 @@ const TimelineCard: React.FC<TimelineCardProps> = ({ step, rotate, className }) 
   return (
     <div
       className={cn(
-        "relative w-full md:w-[350px] lg:w-[380px] transition-transform duration-300 hover:z-30 hover:scale-105",
+        "relative w-full max-w-full mx-auto md:mx-0 md:w-[350px] lg:w-[380px] transition-transform duration-300 hover:z-30 md:hover:scale-105",
         rotate,
         className
       )}
@@ -190,14 +190,22 @@ const DEFAULT_MILESTONES: MilestoneStep[] = [
   },
 ];
 
-// Desktop positioning presets with alternating tilt rotation
+// Desktop positioning presets with alternating tilt rotation.
+// Tilt is md+ only so narrow phones never get shadow/edge bleed.
 const STEP_POSITIONS = [
-  { className: "md:absolute md:top-0 md:left-[10%] lg:left-[12%]", rotate: "rotate-3" },
-  { className: "md:absolute md:top-[230px] md:right-[10%] lg:right-[12%]", rotate: "-rotate-3" },
-  { className: "md:absolute md:top-[560px] md:left-[10%] lg:left-[12%]", rotate: "rotate-3" },
-  { className: "md:absolute md:top-[850px] md:right-[10%] lg:right-[12%]", rotate: "-rotate-3" },
-  { className: "md:absolute md:top-[1220px] md:left-[10%] lg:left-[12%]", rotate: "rotate-3" },
+  { className: "md:absolute md:top-0 md:left-[10%] lg:left-[12%]", rotate: "md:rotate-3" },
+  { className: "md:absolute md:top-[230px] md:right-[10%] lg:right-[12%]", rotate: "md:-rotate-3" },
+  { className: "md:absolute md:top-[560px] md:left-[10%] lg:left-[12%]", rotate: "md:rotate-3" },
+  { className: "md:absolute md:top-[850px] md:right-[10%] lg:right-[12%]", rotate: "md:-rotate-3" },
+  { className: "md:absolute md:top-[1220px] md:left-[10%] lg:left-[12%]", rotate: "md:rotate-3" },
 ];
+
+// Extra milestones beyond the five presets fall back to centered static flow
+// on desktop so they never overlap the absolute zigzag.
+const EXTRA_POSITION = {
+  className: "md:static md:mx-auto md:mt-12 md:max-w-[380px]",
+  rotate: "md:rotate-0",
+};
 
 export default function HowItWorksTimeline({
   milestones = DEFAULT_MILESTONES,
@@ -207,6 +215,8 @@ export default function HowItWorksTimeline({
   className?: string;
 }) {
   const totalHeight = 1580;
+  const baseMilestones = milestones.slice(0, STEP_POSITIONS.length);
+  const extraMilestones = milestones.slice(STEP_POSITIONS.length);
 
   // Connecting snaking cubic-bezier SVG curve between the 5 cards across zigzag
   const svgConnectorPath =
@@ -260,8 +270,8 @@ export default function HowItWorksTimeline({
           </svg>
 
           {/* Cards rendered at staggered zigzag positions */}
-          {milestones.map((milestone, idx) => {
-            const pos = STEP_POSITIONS[idx % STEP_POSITIONS.length];
+          {baseMilestones.map((milestone, idx) => {
+            const pos = STEP_POSITIONS[idx];
             return (
               <TimelineCard
                 key={milestone.number}
@@ -272,6 +282,18 @@ export default function HowItWorksTimeline({
             );
           })}
         </div>
+        {extraMilestones.length > 0 && (
+          <div className="w-full max-w-[1050px] mx-auto flex flex-col items-center space-y-12 mt-12 md:mt-16">
+            {extraMilestones.map((milestone) => (
+              <TimelineCard
+                key={milestone.number}
+                step={milestone}
+                rotate={EXTRA_POSITION.rotate}
+                className={EXTRA_POSITION.className}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -5,15 +5,6 @@ const nextConfig = {
   eslint: {
     dirs: ['src'],
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
-        pathname: '/**',
-      },
-    ],
-  },
   async headers() {
     return [
       {

@@ -79,3 +79,36 @@
     height: min(17rem, 38vh);
   }
 }
+
+/* Short landscape phones (e.g. 740x360, 844x390): keep cards usable
+   without hiding content. Layout grows with vh, inner content compacts
+   slightly and can scroll internally if needed. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .fan-layout {
+    height: min(22rem, 82vh);
+  }
+  .fan-card {
+    width: min(11rem, 62vw);
+    height: min(16rem, 72vh);
+    border-radius: 1rem;
+  }
+  .fan-card > div {
+    padding: 1rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .fan-card h3 {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+  .fan-card p {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fan-card {
+    will-change: auto;
+  }
+}

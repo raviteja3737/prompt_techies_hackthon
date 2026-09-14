@@ -49,14 +49,16 @@ export default function Footer() {
 								<p className="text-inverse-on-surface py-2 text-base">
 									Follow us on Social Media for Updates
 								</p>
-								<div className="flex gap-4">
+								<div className="flex gap-2 sm:gap-4">
 									<Link
 										href="https://twitter.com/prompttechies"
 										target="_blank"
 										rel="noopener noreferrer"
+										aria-label="Prompt Techies on X (Twitter)"
 										className={cn(
 											"text-4xl text-inverse-on-surface",
-											" hover:text-secondary transition-all duration-200 ease-out"
+											" hover:text-secondary transition-all duration-200 ease-out",
+											"p-2 -m-1 min-w-[44px] min-h-[44px] flex items-center justify-center"
 										)}
 									>
 										<FaXTwitter />
@@ -65,9 +67,11 @@ export default function Footer() {
 										href="https://www.instagram.com/prompt_techies"
 										target="_blank"
 										rel="noopener noreferrer"
+										aria-label="Prompt Techies on Instagram"
 										className={cn(
 											"text-4xl text-inverse-on-surface",
-											" hover:text-secondary transition-all duration-200 ease-out"
+											" hover:text-secondary transition-all duration-200 ease-out",
+											"p-2 -m-1 min-w-[44px] min-h-[44px] flex items-center justify-center"
 										)}
 									>
 										<FaInstagram />
@@ -76,9 +80,11 @@ export default function Footer() {
 										href="https://www.linkedin.com/company/prompt-techies/"
 										target="_blank"
 										rel="noopener noreferrer"
+										aria-label="Prompt Techies on LinkedIn"
 										className={cn(
 											"text-4xl text-inverse-on-surface",
-											" hover:text-secondary transition-all duration-200 ease-out"
+											" hover:text-secondary transition-all duration-200 ease-out",
+											"p-2 -m-1 min-w-[44px] min-h-[44px] flex items-center justify-center"
 										)}
 									>
 										<FaLinkedin />
@@ -87,9 +93,11 @@ export default function Footer() {
 										href="https://github.com/prompttechies-del"
 										target="_blank"
 										rel="noopener noreferrer"
+										aria-label="Prompt Techies on GitHub"
 										className={cn(
 											"text-4xl text-inverse-on-surface",
-											" hover:text-secondary transition-all duration-200 ease-out"
+											" hover:text-secondary transition-all duration-200 ease-out",
+											"p-2 -m-1 min-w-[44px] min-h-[44px] flex items-center justify-center"
 										)}
 									>
 										<FaGithub />

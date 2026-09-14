@@ -195,17 +195,20 @@ body {
 
 .chatbot-button {
 	position: fixed;
-	bottom: 20px;
-	right: 20px;
+	bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+	right: max(12px, env(safe-area-inset-right, 0px));
 	background: linear-gradient(135deg, #004bff 0%, #00c8ff 100%);
 	color: #ffffff;
 	border: none;
 	border-radius: 9999px;
 	padding: 10px 18px;
+	min-height: 44px;
 	font-size: 24px;
 	cursor: pointer;
 	box-shadow: 0 4px 16px rgba(0, 75, 255, 0.3);
-	z-index: 1000;
+	/* Below app modals (z-50) and navbar (z-50) so dialogs stay on top,
+	   still above page content. */
+	z-index: 45;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -223,9 +226,10 @@ body {
 .chatbot-popup {
 	position: fixed;
 	bottom: 140px;
-	right: 20px;
-	width: 340px;
-	height: 520px;
+	right: max(12px, env(safe-area-inset-right, 0px));
+	width: min(340px, calc(100vw - 24px));
+	height: min(520px, calc(100dvh - 160px));
+	max-height: calc(100dvh - 120px);
 	background-color: var(--surface);
 	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 	border: 1px solid var(--outline-variant);
@@ -233,7 +237,8 @@ body {
 	padding: 12px;
 	display: flex;
 	flex-direction: column;
-	z-index: 999;
+	z-index: 44;
+	overflow: hidden;
 }
 
 .dark .chatbot-popup {
@@ -270,8 +275,30 @@ body {
 /* ─── Responsive chatbot ─── */
 @media only screen and (max-width: 768px) {
 	.chatbot-popup {
-		bottom: 100px;
-		width: 300px;
-		height: 480px;
+		bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+		width: min(300px, calc(100vw - 24px));
+		height: min(480px, calc(100dvh - 130px));
+		max-height: calc(100dvh - 110px);
+	}
+}
+
+/* Short landscape phones (e.g. 740x360, 844x390): fit popup in height */
+@media only screen and (max-height: 500px) {
+	.chatbot-popup {
+		bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+		height: calc(100dvh - 100px);
+		max-height: calc(100dvh - 90px);
+	}
+}
+
+/* Very narrow Fold-style screens: keep gutter on both sides */
+@media only screen and (max-width: 340px) {
+	.chatbot-button {
+		right: max(8px, env(safe-area-inset-right, 0px));
+		padding: 10px 14px;
+	}
+	.chatbot-popup {
+		right: max(8px, env(safe-area-inset-right, 0px));
+		width: calc(100vw - 16px);
 	}
 }

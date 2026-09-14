@@ -1,6 +1,6 @@
 /**
- * Centralized links configuration reading from .env.local with safe fallbacks.
- * To update any link, modify the corresponding variable in your `.env.local` file.
+ * Centralized links configuration reading from root `.env` with safe fallbacks.
+ * To update any link, modify the corresponding variable in your `.env` file.
  */
 export const SOCIAL_LINKS = {
 	// Social Media & Community Links

@@ -189,8 +189,8 @@ export default function NetworkingPage() {
 
 				{/* Check-In Modal */}
 				{showCheckInModal && (
-					<div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-						<div className="w-full max-w-md p-6 rounded-2xl bg-[#0d1525] border border-[#00c8ff]/30 space-y-4">
+					<div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+						<div className="w-full max-w-md p-6 rounded-2xl bg-[#0d1525] border border-[#00c8ff]/30 space-y-4 my-auto max-h-[calc(100dvh-2rem)] overflow-y-auto">
 							<h2 className="text-lg font-bold font-orbitron text-white">Attendee Profile & Check-in</h2>
 							<form onSubmit={handleCheckIn} className="space-y-3 text-xs">
 								<div>
@@ -213,7 +213,7 @@ export default function NetworkingPage() {
 										className="w-full p-2.5 rounded-lg bg-[#070c18] border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:border-[#00c8ff] mt-1"
 									/>
 								</div>
-								<div className="grid grid-cols-2 gap-2">
+								<div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-2">
 									<div>
 										<label className="text-slate-300 font-semibold">College / Org</label>
 										<input

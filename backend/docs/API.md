@@ -226,7 +226,8 @@ settings updates and jury-assignment removal).
 
 ## Environment variables
 
-See `.env.example` for the full annotated list: server/CORS, `DATABASE_URL`,
+See `../.env.example` (the single unified template at the repo root)
+for the full annotated list: server/CORS, `DATABASE_URL`,
 JWT config, `JURY_ALIAS_SALT`, admin/seed bootstrap credentials, and the
 optional `STORAGE_PROVIDER`/`AWS_*` block for pitch-deck uploads.
 
@@ -236,7 +237,7 @@ optional `STORAGE_PROVIDER`/`AWS_*` block for pitch-deck uploads.
 
 ```bash
 npm install
-cp .env.example .env       # fill in real secrets, at minimum DATABASE_URL, JWT_SECRET, JURY_ALIAS_SALT, ADMIN_EMAIL/ADMIN_PASSWORD
+cp ../.env.example .env       # unified template at repo root; fill in real secrets, at minimum DATABASE_URL, JWT_SECRET, JURY_ALIAS_SALT, ADMIN_EMAIL/ADMIN_PASSWORD
 npx prisma generate
 npx prisma migrate dev --name init
 npm run seed                # bootstraps the admin + a full dev dataset (see prisma/seed.js)
@@ -246,8 +247,8 @@ npm run dev                 # http://localhost:4000, GET /health should return {
 ## Testing
 
 ```bash
-cp .env.example .env.test
-# edit .env.test: point DATABASE_URL at a throwaway test database
+cp ../.env.example .env.test
+# edit .env.test: keep only Section 2 vars, point DATABASE_URL at a throwaway test database (see .env.example Section 4)
 npx dotenv -e .env.test -- npx prisma migrate deploy
 npm test
 ```

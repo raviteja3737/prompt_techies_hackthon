@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import cn from "@/utils/cn";
 
@@ -7,8 +7,36 @@ export const BoxesCore = ({
   className,
   ...rest
 }) => {
-  const rows = new Array(150).fill(1);
-  const cols = new Array(100).fill(1);
+  // Desktop keeps the full 150x100 grid. Mobile / reduced-motion render a
+  // much smaller grid so low-end devices don't mount ~15k motion nodes.
+  const [isCompact, setIsCompact] = useState(false);
+  const [prefersReduced, setPrefersReduced] = useState(false);
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia("(max-width: 768px)");
+    const reducedQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => {
+      setIsCompact(mobileQuery.matches);
+      setPrefersReduced(reducedQuery.matches);
+    };
+    sync();
+    mobileQuery.addEventListener("change", sync);
+    reducedQuery.addEventListener("change", sync);
+    return () => {
+      mobileQuery.removeEventListener("change", sync);
+      reducedQuery.removeEventListener("change", sync);
+    };
+  }, []);
+
+  const rows = useMemo(
+    () => new Array(prefersReduced ? 24 : isCompact ? 40 : 150).fill(1),
+    [isCompact, prefersReduced]
+  );
+  const cols = useMemo(
+    () => new Array(prefersReduced ? 10 : isCompact ? 20 : 100).fill(1),
+    [isCompact, prefersReduced]
+  );
+  const enableHover = !prefersReduced;
   let colors = [
     "#004bff",
     "#00c8ff",
@@ -31,10 +59,14 @@ export const BoxesCore = ({
         <motion.div key={`row` + i} className="w-[72px] h-[36px] border-l-[1.5px] border-white/25 relative">
           {cols.map((_, j) => (
             <motion.div
-              whileHover={{
-                backgroundColor: `#00c8ff`,
-                transition: { duration: 0 },
-              }}
+              {...(enableHover
+                ? {
+                    whileHover: {
+                      backgroundColor: `#00c8ff`,
+                      transition: { duration: 0 },
+                    },
+                  }
+                : {})}
               animate={{
                 transition: { duration: 2 },
               }}

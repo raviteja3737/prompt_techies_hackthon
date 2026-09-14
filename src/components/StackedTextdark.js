@@ -4,17 +4,23 @@ import React, { useState } from 'react';
 const StackedTextDark = ({ text, fontSize = '48px'}) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  // Responsive cap: keeps desktop px size intact via min(), shrinks on
+  // narrow phones to avoid nowrap overflow (see StackedText).
+  const responsiveFontSize = `min(${fontSize}, 11vw)`;
+
   const baseStyle = {
     fontWeight: 'bold',
-    fontSize: fontSize,
+    fontSize: responsiveFontSize,
+    lineHeight: '1.1',
     position: 'absolute',
     whiteSpace: 'nowrap',
+    maxWidth: '100%',
     transition: 'all 0.3s ease',
   };
 
   return (
     <div
-      style={{ position: 'relative', display: 'inline-block' }}
+      style={{ position: 'relative', display: 'inline-block', maxWidth: '100%' }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

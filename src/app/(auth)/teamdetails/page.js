@@ -493,8 +493,8 @@ export default function TeamDetails() {
 
 			{/* Confirmation Modal before permanent track lock */}
 			{showLockConfirmModal && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-					<div className="w-full max-w-md p-6 bg-[#0d1525] border border-amber-500/40 rounded-2xl shadow-2xl space-y-4">
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm overflow-y-auto">
+					<div className="w-full max-w-md p-6 bg-[#0d1525] border border-amber-500/40 rounded-2xl shadow-2xl space-y-4 my-auto max-h-[calc(100dvh-2rem)] overflow-y-auto">
 						<div className="flex items-center gap-3 text-amber-400">
 							<AlertTriangle className="w-6 h-6" />
 							<h3 className="text-lg font-bold font-orbitron text-white">Confirm Track Lock</h3>

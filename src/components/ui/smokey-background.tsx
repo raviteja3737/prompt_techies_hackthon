@@ -65,8 +65,11 @@ export function SmokeyBackground({
 }: SmokeyBackgroundProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-	const [isHovering, setIsHovering] = useState(false);
+	// Refs drive the render loop so mousemove doesn't re-create WebGL state.
+	// State setters are kept (no-ops visually) only to preserve any external
+	// behavior; the loop reads from refs.
+	const mouseRef = useRef({ x: 0, y: 0, hovering: false });
+	const [, forceTick] = useState(0);
 
 	const hexToRgb = (hex: string): [number, number, number] => {
 		const cleanHex = hex.replace("#", "");
@@ -80,6 +83,10 @@ export function SmokeyBackground({
 		const canvas = canvasRef.current;
 		const container = containerRef.current;
 		if (!canvas) return;
+
+		const prefersReduced =
+			typeof window !== "undefined" &&
+			window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 		const gl = canvas.getContext("webgl", { alpha: true, antialias: true });
 		if (!gl) {
@@ -137,8 +144,10 @@ export function SmokeyBackground({
 		gl.uniform3f(uColorLocation, r, g, b);
 
 		let animationFrameId: number;
+		const visibleRef = { current: true };
+		let frameCount = 0;
 
-		const render = () => {
+		const drawFrame = (currentTime: number) => {
 			const width = canvas.clientWidth || window.innerWidth;
 			const height = canvas.clientHeight || window.innerHeight;
 			if (canvas.width !== width || canvas.height !== height) {
@@ -147,41 +156,76 @@ export function SmokeyBackground({
 				gl.viewport(0, 0, width, height);
 			}
 
-			const currentTime = (Date.now() - startTime) / 1000;
-
 			gl.uniform2f(iResolutionLocation, width, height);
 			gl.uniform1f(iTimeLocation, currentTime);
 			gl.uniform2f(
 				iMouseLocation,
-				isHovering ? mousePosition.x : width / 2,
-				isHovering ? height - mousePosition.y : height / 2
+				mouseRef.current.hovering ? mouseRef.current.x : width / 2,
+				mouseRef.current.hovering
+					? height - mouseRef.current.y
+					: height / 2
 			);
 
 			gl.drawArrays(gl.TRIANGLES, 0, 6);
+		};
+
+		const render = () => {
+			// Pause work when off-screen; throttle low-end / small screens.
+			const isCompact =
+				typeof window !== "undefined" && window.innerWidth < 768;
+			frameCount += 1;
+			if (visibleRef.current && (!isCompact || frameCount % 2 === 0)) {
+				const currentTime = (Date.now() - startTime) / 1000;
+				drawFrame(currentTime);
+			}
 			animationFrameId = requestAnimationFrame(render);
 		};
 
 		const handleMouseMove = (event: MouseEvent) => {
 			const rect = canvas.getBoundingClientRect();
-			setMousePosition({ x: event.clientX - rect.left, y: event.clientY - rect.top });
+			mouseRef.current.x = event.clientX - rect.left;
+			mouseRef.current.y = event.clientY - rect.top;
 		};
-		const handleMouseEnter = () => setIsHovering(true);
-		const handleMouseLeave = () => setIsHovering(false);
+		const handleMouseEnter = () => {
+			mouseRef.current.hovering = true;
+			forceTick((n) => n + 1);
+		};
+		const handleMouseLeave = () => {
+			mouseRef.current.hovering = false;
+			forceTick((n) => n + 1);
+		};
 
 		const targetElement = container || canvas;
 		targetElement.addEventListener("mousemove", handleMouseMove);
 		targetElement.addEventListener("mouseenter", handleMouseEnter);
 		targetElement.addEventListener("mouseleave", handleMouseLeave);
 
-		render();
+		const observer =
+			typeof IntersectionObserver !== "undefined" && container
+				? new IntersectionObserver(
+						(entries) => {
+							visibleRef.current = entries[0]?.isIntersecting ?? true;
+						},
+						{ threshold: 0.02 }
+					)
+				: null;
+		if (observer && container) observer.observe(container);
+
+		if (prefersReduced) {
+			// Static single frame: preserves the fog look without motion.
+			drawFrame(0.6);
+		} else {
+			render();
+		}
 
 		return () => {
 			cancelAnimationFrame(animationFrameId);
 			targetElement.removeEventListener("mousemove", handleMouseMove);
 			targetElement.removeEventListener("mouseenter", handleMouseEnter);
 			targetElement.removeEventListener("mouseleave", handleMouseLeave);
+			if (observer && container) observer.disconnect();
 		};
-	}, [isHovering, mousePosition, color]);
+	}, [color]);
 
 	return (
 		<div

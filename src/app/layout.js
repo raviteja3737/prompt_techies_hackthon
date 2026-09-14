@@ -66,6 +66,12 @@ export const metadata = {
 	),
 };
 
+export const viewport = {
+	width: "device-width",
+	initialScale: 1,
+	themeColor: "#0a0a0a",
+};
+
 export default function RootLayout({ children }) {
 	const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 

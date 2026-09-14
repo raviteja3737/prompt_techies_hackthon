@@ -766,10 +766,10 @@ export default function AdminPage() {
 
 			{/* Track Edit Modal */}
 			{editingTrack && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm overflow-y-auto">
 					<form
 						onSubmit={handleSaveTrackEdit}
-						className="w-full max-w-lg p-6 bg-[#0d1525] border border-[#00c8ff]/40 rounded-2xl shadow-2xl space-y-4"
+						className="w-full max-w-lg p-6 bg-[#0d1525] border border-[#00c8ff]/40 rounded-2xl shadow-2xl space-y-4 my-auto max-h-[calc(100dvh-2rem)] overflow-y-auto"
 					>
 						<div className="flex items-center justify-between border-b border-white/10 pb-3">
 							<h3 className="text-base font-bold font-orbitron text-white">Edit Problem Track</h3>

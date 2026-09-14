@@ -135,16 +135,49 @@ useEffect(() => {
     if (chatWindowRef.current) {
         chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
-}, [chatHistory]);
+}, [chatHistory, isTyping]);
+
+const showTypingDots = isTyping && (chatHistory.length === 0 || chatHistory[chatHistory.length - 1]?.sender === 'user');
 
 return (
     <div className="chatbot">
-        <div className="chat-window" ref={chatWindowRef}>
-            {chatHistory.map((chat, index) => (
-                <div key={index} className={`chat-message ${chat.sender}-message`}>
-                    {chat.sender === 'user' ? 'You' : 'Ask Prompt Techies'} <Markdown>{chat.message}</Markdown>
+        <div className="chatbot-header">
+            <div className="chatbot-header-avatar" aria-hidden="true">
+                <i className="ri-bard-fill"></i>
+            </div>
+            <div className="chatbot-header-text">
+                <span className="chatbot-header-title">Ask PT</span>
+                <span className="chatbot-header-subtitle">
+                    <span className="chatbot-header-status" aria-hidden="true"></span>
+                    Prompt Techies assistant
+                </span>
+            </div>
+        </div>
+        <div className="chat-window" ref={chatWindowRef} aria-live="polite" role="log" aria-label="Ask PT conversation">
+            {chatHistory.length === 0 && !isTyping ? (
+                <div className="chat-empty">
+                    <div className="chat-empty-icon" aria-hidden="true">
+                        <i className="ri-sparkling-2-fill"></i>
+                    </div>
+                    <p>Ask about workshops, hackathons, bootcamps, or startup incubation.</p>
                 </div>
-            ))}
+            ) : (
+                chatHistory.map((chat, index) => (
+                    <div key={index} className={`chat-message ${chat.sender}-message`}>
+                        <span className="chat-sender">{chat.sender === 'user' ? 'You' : 'Ask PT'}</span>
+                        <div className="chat-text">
+                            <Markdown>{chat.message}</Markdown>
+                        </div>
+                    </div>
+                ))
+            )}
+            {showTypingDots && (
+                <div className="typing-indicator" aria-label="Assistant is typing">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            )}
         </div>
         <div className="input">
             <input
@@ -155,14 +188,17 @@ return (
                     setUserMessage(e.target.value);
                 }}
                 onKeyDown={handleKeyDown}
-                placeholder="Type your message"
+                placeholder="Ask about Prompt Techies…"
+                aria-label="Type your message to Ask PT"
                 disabled={false} 
             />
             <button 
+                className="send-button"
                 onClick={sendMessage} 
                 disabled={isTyping || userMessage.trim() === ''}
+                aria-label="Send message"
             >
-                <i className="ri-send-plane-2-fill"></i>
+                <i className="ri-send-plane-2-fill" aria-hidden="true"></i>
             </button>
         </div>
     </div>

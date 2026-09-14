@@ -1,0 +1,76 @@
+# Promptothon — single monorepo compose: website + API + database.
+# (Replaces the old backend/docker-compose.yml, which only ran Postgres.)
+#
+# Local dev:   docker compose up --build
+#   web -> http://localhost:3000, api -> http://localhost:4000,
+#   db  -> localhost:5432 (data persists in the `pgdata` volume).
+# One-off DB setup (first boot only):
+#   docker compose exec api npx prisma migrate deploy
+#   docker compose exec api npm run seed
+# Prod: fill real secrets in .env / backend/.env (see .env.example header),
+# then `docker compose up --build -d`. Changing any NEXT_PUBLIC_* var
+# needs `docker compose build web` (Next.js bakes them in at build time).
+
+services:
+  # --- Database: official image, NO custom Dockerfile needed ------------
+  db:
+    image: postgres:16-alpine
+    container_name: promptothon-postgres
+    restart: unless-stopped
+    env_file:
+      - path: ./.env
+        required: false # POSTGRES_* optional here; defaults below apply
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password123}
+      POSTGRES_DB: ${POSTGRES_DB:-promptothon}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # --- API: Express backend ----------------------------------------------
+  api:
+    build: ./backend
+    container_name: promptothon-api
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env # runtime secrets; never baked into the image
+    environment:
+      # Inside the compose network the DB host is `db`, not localhost
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-password123}@db:5432/${POSTGRES_DB:-promptothon}
+      DIRECT_URL: postgresql://postgres:${POSTGRES_PASSWORD:-password123}@db:5432/${POSTGRES_DB:-promptothon}
+    ports:
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # --- Web: Next.js frontend ----------------------------------------------
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_SOCKET_URL: ${NEXT_PUBLIC_SOCKET_URL:-http://localhost:4000}
+    container_name: promptothon-web
+    restart: unless-stopped
+    env_file:
+      - path: ./.env
+        required: false
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+    # Pinned name so the volume survives compose project renames and keeps
+    # the data created earlier by backend/docker-compose.yml.
+    name: backend_pgdata

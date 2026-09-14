@@ -21,6 +21,13 @@ const ScrollingHeroSection = () => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
+		// Static hero for reduced-motion users; preserves animation otherwise.
+		if (
+			typeof window !== "undefined" &&
+			window.matchMedia("(prefers-reduced-motion: reduce)").matches
+		) {
+			return;
+		}
 		const section = sectionRef.current;
 		const words = wordsRef.current.children;
 		const arrow = arrowRef.current;
@@ -71,21 +78,21 @@ const ScrollingHeroSection = () => {
 				<div className="min-w-full pt-32 lg:pt-16 flex flex-col items-center justify-center">
 					<div
 						ref={wordsRef}
-						className="relative w-full text-[4rem] sm:text-[8rem] md:text-[9rem] lg:text-[16rem] font-bold"
+						className="relative w-full text-[2.5rem] leading-none sm:text-[8rem] md:text-[9rem] lg:text-[16rem] font-bold"
 						style={{ height: "0.8em" }}
 					>
 						{[...Array(8)].map((_, index) => (
 							<div
 								key={index}
-								className="absolute whitespace-nowrap px-10 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+								className="absolute whitespace-nowrap px-4 sm:px-10 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-full"
 							>
 								Preptember
 							</div>
 						))}
 					</div>
 
-					<div className="hidden lg:flex flex-col items-end mb-24 preptember-hero-desc">
-						<p className=" p-7 lg:max-w-[550px] lg:ml-[30%] text-xl">
+					<div className="flex flex-col items-center px-6 text-center mb-16 lg:mb-24 lg:items-end preptember-hero-desc">
+						<p className="p-4 sm:p-7 text-base sm:text-lg lg:text-xl max-w-full lg:max-w-[550px] lg:ml-[30%] lg:text-left">
 							<span className="text-green">Preptember</span> is
 							the ultimate prep series designed to get you ready
 							for{" "}
@@ -97,7 +104,7 @@ const ScrollingHeroSection = () => {
 							technologies you'll need, so you're fully prepared
 							to participate!
 						</p>
-						<div ref={arrowRef} className="ml-[60%]  inline-block">
+						<div ref={arrowRef} className="ml-[60%] hidden lg:inline-block">
 							<FaCircleArrowUp className=" lg:block size-20 text-green" />
 						</div>
 					</div>
@@ -172,7 +179,7 @@ const ScrollingHeroSection = () => {
 
 											<p>#{idx + 1}</p>
 
-											<h1 className="text-9xl text-background">
+											<h1 className="text-2xl sm:text-3xl text-background break-words max-w-full">
 												<span className="text-deeppink">
 													&gt;
 												</span>{" "}
@@ -191,7 +198,7 @@ const ScrollingHeroSection = () => {
 				<div className="container mx-auto">
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 mx-5 lg:mx-0 lg:mt-24">
 						<div>
-							<h3 className="text-beige text-6xl  mb-12   max-w-fit mt-20 lg:mt-0">
+							<h3 className="text-beige text-3xl sm:text-4xl lg:text-6xl mb-12 max-w-full break-words mt-20 lg:mt-0">
 								<span className="text-deeppink">&gt;</span>
 								<TypingEffect
 									text="Resources for Beginners"
@@ -199,8 +206,8 @@ const ScrollingHeroSection = () => {
 								/>
 							</h3>
 						</div>
-						<div className="underline text-green mb-20">
-							<ul className="list-disc list-inside text-xl lg:text-3xl">
+						<div className="underline text-green mb-20 px-4 sm:px-0">
+							<ul className="list-disc list-inside text-base sm:text-xl lg:text-3xl break-words">
 								<li>
 									<a
 										href={SOCIAL_LINKS.hacktoberfest}

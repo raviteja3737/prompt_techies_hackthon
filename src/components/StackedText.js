@@ -4,17 +4,28 @@ import React, { useState } from "react";
 const StackedText = ({ text, fontSize = "48px" }) => {
 	const [isHovered, setIsHovered] = useState(false);
 
+	// Cap fixed px sizes to viewport width so long headings (e.g. 70-80px)
+	// don't clip on 280-360px phones. On desktop `min()` resolves to the
+	// original prop, preserving the exact visual design.
+	const responsiveFontSize = `min(${fontSize}, 11vw)`;
+
 	const baseStyle = {
 		fontWeight: "bold",
-		fontSize: fontSize,
+		fontSize: responsiveFontSize,
+		lineHeight: "1.1",
 		position: "absolute",
-		whiteSpace: "nowrap", 
-		transition: "all 0.3s ease", 
+		whiteSpace: "nowrap",
+		maxWidth: "100%",
+		transition: "all 0.3s ease",
 	};
 
 	return (
 		<div
-			style={{ position: "relative", display: "inline-block" }}
+			style={{
+				position: "relative",
+				display: "inline-block",
+				maxWidth: "100%",
+			}}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>

@@ -41,7 +41,7 @@ const TypingEffect2 = ({ text, speed = 100, onComplete }) => {
   }, []);
 
   return (
-    <div >
+    <div style={{ maxWidth: "100%", overflowWrap: "break-word" }}>
       {displayedText}
       <span className={cursorVisible ? 'opacity-100' : 'opacity-0'}>_</span>
     </div>

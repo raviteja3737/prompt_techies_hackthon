@@ -13,7 +13,8 @@ Postman collection: **[postman/promptothon.postman_collection.json](postman/prom
 
 ```bash
 npm install
-cp .env.example .env   # then fill in real secrets
+cp ../.env.example .env   # unified template at repo root, then fill in real secrets
+# (frontend uses root .env instead — see ../.env.example header)
 npx prisma generate
 npx prisma migrate dev --name init
 npm run seed            # creates the ADMIN user + a full dev dataset

@@ -44,7 +44,7 @@ async function getPresignedUploadUrl({ teamId, contentType, sizeBytes }) {
   if (provider === "disabled") {
     throw new ApiError(
       501,
-      "File uploads are not configured on this server. Set STORAGE_PROVIDER=supabase and the SUPABASE_* environment variables to enable pitch-deck uploads."
+      "File uploads are not configured on this server (STORAGE_PROVIDER is disabled)."
     );
   }
 
